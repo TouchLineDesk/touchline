@@ -1,0 +1,996 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>html,body{margin:0}</style></head><body><title>Touchline Academy Desk</title>
+<meta name="description" content="Edition 1 of Touchline, the in-universe sports desk covering the USL Academy save.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700;1,800&family=Big+Shoulders+Display:wght@700;800;900&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --ground:#ECEEF1; --surface:#FFFFFF; --surface-2:#F4F5F7;
+  --ink:#0F1724; --ink-2:#2A3445; --muted:#5A6576; --rule:#D6DBE2;
+  --accent:#D0281C; --accent-ink:#FFFFFF; --gold:#A0740C;
+  --q:#1F5FBF; --q-bg:rgba(31,95,191,.07); --r:#B3261E; --r-bg:rgba(179,38,30,.07);
+  --win:#1E8A55; --draw:#8A94A3; --loss:#C4382D;
+  --mast:#0F1724; --mast-ink:#F3F5F8; --mast-muted:#9AA5B5;
+  --sb-bg:#0C121B; --sb-panel:#121A26; --sb-ink:#E9EDF2; --sb-muted:#8D98A8; --sb-rule:#1F2A38;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Libre Franklin","Helvetica Neue",Arial,sans-serif;
+  --data:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A0F16; --surface:#121925; --surface-2:#172131;
+    --ink:#EDF1F6; --ink-2:#C9D1DC; --muted:#98A3B4; --rule:#243043;
+    --accent:#FF4B3E; --accent-ink:#FFFFFF; --gold:#E2B54B;
+    --q:#6EA2FF; --q-bg:rgba(110,162,255,.10); --r:#FF6B60; --r-bg:rgba(255,107,96,.10);
+    --win:#3CC47F; --draw:#7D8899; --loss:#FF6B60;
+    --mast:#05080D; --mast-ink:#F3F5F8; --mast-muted:#8D98A8;
+    --sb-bg:#05080D; --sb-panel:#0D141E; --sb-rule:#1A2330;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A0F16; --surface:#121925; --surface-2:#172131;
+  --ink:#EDF1F6; --ink-2:#C9D1DC; --muted:#98A3B4; --rule:#243043;
+  --accent:#FF4B3E; --accent-ink:#FFFFFF; --gold:#E2B54B;
+  --q:#6EA2FF; --q-bg:rgba(110,162,255,.10); --r:#FF6B60; --r-bg:rgba(255,107,96,.10);
+  --win:#3CC47F; --draw:#7D8899; --loss:#FF6B60;
+  --mast:#05080D; --mast-ink:#F3F5F8; --mast-muted:#8D98A8;
+  --sb-bg:#05080D; --sb-panel:#0D141E; --sb-rule:#1A2330;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:20px}
+.num{font-family:var(--data);font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+.mast{background:var(--mast);color:var(--mast-ink)}
+.mast .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 32px;flex-wrap:wrap;padding-block:18px 0}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;text-decoration:none}
+.wordmark{font-family:var(--display);font-weight:900;font-size:clamp(34px,5vw,50px);line-height:.9;letter-spacing:.01em;text-transform:uppercase;position:relative;padding-bottom:10px}
+.wordmark::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--mast-ink);opacity:.9}
+.wordmark::before{content:"";position:absolute;left:0;bottom:0;width:30%;height:3px;background:var(--accent);z-index:1}
+.desk{font-family:var(--data);font-weight:600;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--mast-muted)}
+.edition{font-family:var(--data);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--mast-muted);padding-bottom:10px;text-align:right}
+.edition b{color:var(--mast-ink);font-weight:700}
+.nav{border-top:1px solid rgba(255,255,255,.08);margin-top:14px}
+.nav ul{list-style:none;display:flex;gap:4px 24px;flex-wrap:wrap;margin:0;padding:10px 0}
+.nav a{font-family:var(--data);font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--mast-ink);opacity:.82}
+.nav a:hover{opacity:1;color:#fff;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:6px;text-decoration-thickness:2px}
+
+/* ---------- ticker ---------- */
+.ticker{background:var(--sb-bg);color:var(--sb-ink);display:flex;align-items:stretch;border-bottom:3px solid var(--accent);overflow:hidden}
+.ticker-label{background:var(--accent);color:var(--accent-ink);font-family:var(--data);font-weight:800;font-style:italic;letter-spacing:.06em;text-transform:uppercase;padding:9px 16px;white-space:nowrap;flex:none;font-size:15px}
+.ticker-viewport{overflow:hidden;flex:1;position:relative}
+.ticker-track{display:flex;width:max-content;animation:tick 70s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.tick-item{font-family:var(--data);font-size:16px;font-weight:600;padding:9px 22px;white-space:nowrap;border-right:1px solid var(--sb-rule);font-variant-numeric:tabular-nums}
+.tick-item .k{color:var(--sb-muted);font-weight:500;margin-right:8px;letter-spacing:.05em;text-transform:uppercase;font-size:14px}
+.tick-item b{color:#fff}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){
+  .ticker-track{animation:none}
+  .ticker-viewport{overflow-x:auto}
+}
+
+/* ---------- common section heads ---------- */
+.sec{padding-block:36px 0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:18px}
+.sec-head h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.2vw,34px);text-transform:uppercase;letter-spacing:.01em;line-height:1}
+.sec-head .aside{font-family:var(--data);font-size:15px;color:var(--muted);letter-spacing:.04em}
+.kicker{font-family:var(--data);font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+/* ---------- top: lead + standings ---------- */
+.top{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;padding-block:24px 0;align-items:start}
+.lead{background:var(--surface);border:1px solid var(--rule)}
+.matchup{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;min-height:230px;position:relative;overflow:hidden}
+.side{display:flex;flex-direction:column;justify-content:center;padding:26px 28px;gap:6px}
+.side.unc{background:#7BAFD4;color:#13294B;clip-path:polygon(0 0,100% 0,88% 100%,0 100%);margin-right:-60px}
+.side.mich{background:#00274C;color:#FFCB05;clip-path:polygon(12% 0,100% 0,100% 100%,0 100%);margin-left:-60px;text-align:right;align-items:flex-end}
+.side .abbr{font-family:var(--display);font-weight:900;font-size:clamp(56px,9vw,104px);line-height:.85}
+.side .full{font-family:var(--data);font-weight:700;font-size:16px;letter-spacing:.1em;text-transform:uppercase}
+.side .path{font-family:var(--data);font-size:15px;font-weight:600;opacity:.9}
+.vs{z-index:2;align-self:center;background:var(--mast);color:var(--mast-ink);padding:14px 16px;text-align:center;font-family:var(--data);box-shadow:0 0 0 4px var(--surface)}
+.vs .v{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;color:var(--accent)}
+.vs .d{font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.vs .t{font-size:13px;color:var(--mast-muted);letter-spacing:.06em;text-transform:uppercase}
+.lead-body{padding:24px 28px 28px;display:grid;gap:14px}
+.lead h1{font-family:var(--display);font-weight:900;font-size:clamp(36px,5.2vw,62px);line-height:.95;text-transform:uppercase;letter-spacing:.005em}
+.dek{font-size:19px;line-height:1.45;color:var(--ink-2);max-width:62ch}
+.byline{font-family:var(--data);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lead .copy{display:grid;gap:12px;max-width:66ch}
+.statstrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:6px}
+.statstrip div{padding:12px 14px;border-right:1px solid var(--rule)}
+.statstrip div:last-child{border-right:0}
+.statstrip .n{font-family:var(--data);font-weight:800;font-style:italic;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.statstrip .l{font-size:13px;color:var(--muted);line-height:1.35;margin-top:4px}
+
+.rail{background:var(--surface);border:1px solid var(--rule)}
+.rail-head{padding:14px 16px 10px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.rail-head h2{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1}
+.rail-head span{font-family:var(--data);font-size:14px;color:var(--muted);letter-spacing:.04em}
+table.stand{width:100%;border-collapse:collapse;font-family:var(--data);font-variant-numeric:tabular-nums;font-size:16px}
+.stand th{font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--rule)}
+.stand th:nth-child(2){text-align:left}
+.stand td{padding:5px 8px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+.stand td.pos{width:34px;text-align:left;color:var(--muted);font-weight:600;border-left:4px solid transparent}
+.stand td.team{text-align:left;font-weight:700;letter-spacing:.02em}
+.stand td.pts{font-weight:800;font-size:17px}
+.stand tr.q td.pos{border-left-color:var(--q)}
+.stand tr.q{background:var(--q-bg)}
+.stand tr.rel td.pos{border-left-color:var(--r)}
+.stand tr.rel{background:var(--r-bg)}
+.stand tr.ai td.team{color:var(--muted);font-weight:600}
+.stand tr.cut td{border-bottom:2px dashed var(--muted)}
+.chip{display:inline-flex;width:14px;height:14px;margin-right:8px;vertical-align:-2px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.chip i{flex:1}
+.badge{display:inline-block;font-size:11px;font-weight:800;padding:0 4px;margin-left:6px;border-radius:2px;vertical-align:2px;letter-spacing:.04em}
+.badge.c{background:var(--gold);color:#fff}
+.badge.r{background:var(--r);color:#fff}
+.form{display:inline-flex;gap:2px}
+.form i{width:8px;height:8px;border-radius:50%;display:block}
+.form .W{background:var(--win)} .form .D{background:var(--draw)} .form .L{background:var(--loss)}
+.legend{display:flex;gap:6px 16px;flex-wrap:wrap;padding:10px 16px 14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{width:10px;height:10px;display:inline-block}
+
+/* ---------- headline cards ---------- */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--rule);display:flex;flex-direction:column}
+.card .big{background:var(--mast);color:var(--mast-ink);padding:18px 20px 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;min-height:118px}
+.card .big .fig{font-family:var(--data);font-weight:800;font-style:italic;font-size:64px;line-height:.85;font-variant-numeric:tabular-nums}
+.card .big .fig small{font-size:26px;font-style:normal;font-weight:600;color:var(--mast-muted);margin-left:4px}
+.card .big .cap{font-family:var(--data);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--mast-muted);text-align:right;max-width:18ch;line-height:1.25}
+.card .in{padding:16px 20px 20px;display:grid;gap:8px}
+.card h3{font-family:var(--display);font-weight:800;font-size:27px;line-height:1;text-transform:uppercase}
+.card p{font-size:15px;color:var(--ink-2)}
+
+/* ---------- race ---------- */
+.race{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--rule);padding:20px 22px}
+.panel h3{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1;margin-bottom:6px}
+.panel .sub{font-size:14px;color:var(--muted);margin-bottom:16px}
+.ladder{display:grid;gap:12px}
+.lrow{display:grid;grid-template-columns:64px minmax(0,1fr) 150px;gap:12px;align-items:center}
+.lrow .who{font-family:var(--data);font-weight:700;font-size:17px;display:flex;align-items:center}
+.track{position:relative;height:26px;background:var(--surface-2);border:1px solid var(--rule)}
+.track .max{position:absolute;top:0;bottom:0;left:0;background:repeating-linear-gradient(135deg,var(--q-bg) 0 6px,transparent 6px 12px);border-right:2px dotted var(--q)}
+.track .now{position:absolute;top:0;bottom:0;left:0;background:var(--q)}
+.track .lab{position:absolute;top:50%;transform:translateY(-50%);font-family:var(--data);font-weight:800;font-size:15px;color:#fff;padding-left:8px}
+.lrow .left{font-family:var(--data);font-size:14px;color:var(--muted);line-height:1.25}
+.lrow .left b{color:var(--ink);font-weight:700}
+.axis{display:grid;grid-template-columns:64px minmax(0,1fr) 150px;gap:12px;margin-top:4px}
+.axis .ticks{position:relative;height:18px;font-family:var(--data);font-size:13px;color:var(--muted)}
+.axis .ticks span{position:absolute;transform:translateX(-50%)}
+.note{font-size:14px;color:var(--muted);margin-top:14px;line-height:1.45}
+.fx{display:grid;gap:18px}
+.fx-day h4{font-family:var(--data);font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:0 0 6px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.fx-day ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.fx-day li{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:8px;font-family:var(--data);font-size:16px;align-items:baseline}
+.fx-day li .tm{color:var(--muted);font-variant-numeric:tabular-nums}
+.fx-day li .tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor;border-radius:2px;color:var(--q);white-space:nowrap}
+.fx-day li .tag.rel{color:var(--r)}
+.fx-day li .tag.big{color:var(--gold)}
+.fx-day li.hot{font-weight:700}
+
+/* ---------- bowls ---------- */
+.bowls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.bowl{background:var(--surface);border:1px solid var(--rule);padding:18px 20px}
+.bowl h3{font-family:var(--display);font-weight:800;font-size:26px;text-transform:uppercase;line-height:1}
+.bowl .when{font-family:var(--data);font-size:14px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin:4px 0 12px}
+.bowl ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.bowl li{display:flex;justify-content:space-between;gap:8px;font-family:var(--data);font-size:17px;font-weight:600;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.bowl li:last-child{border-bottom:0}
+.bowl li span:last-child{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ---------- the grid (scoreboard band) ---------- */
+.band{background:var(--sb-bg);color:var(--sb-ink);margin-top:44px;padding-block:36px 40px}
+.band .sec-head{border-bottom-color:var(--sb-ink)}
+.band .sec-head .aside{color:var(--sb-muted)}
+.band .intro{max-width:70ch;color:var(--sb-muted);font-size:15px;margin-bottom:18px}
+.band .intro b{color:var(--sb-ink)}
+.gridwrap{overflow-x:auto;border:1px solid var(--sb-rule);background:var(--sb-panel)}
+table.xt{border-collapse:collapse;font-family:var(--data);font-variant-numeric:tabular-nums;min-width:1100px;width:100%}
+.xt th{font-weight:700;font-size:14px;letter-spacing:.06em;color:var(--sb-muted);padding:8px 4px;border-bottom:1px solid var(--sb-rule);text-align:center;position:sticky;top:0;background:var(--sb-panel)}
+.xt th.rowh{text-align:left;padding:4px 10px;position:sticky;left:0;background:var(--sb-panel);color:var(--sb-ink);white-space:nowrap;font-size:15px;border-right:1px solid var(--sb-rule);z-index:1}
+.xt th.rowh .p{color:var(--sb-muted);display:inline-block;width:22px}
+.xt th.corner{position:sticky;left:0;z-index:2;text-align:left;padding-left:10px}
+.xt td{border:1px solid var(--sb-rule);padding:3px 2px;text-align:center;height:46px;min-width:60px;vertical-align:middle}
+.xt td.self{background:repeating-linear-gradient(45deg,#0000 0 5px,rgba(255,255,255,.04) 5px 10px)}
+.xt .leg{display:block;font-size:14px;line-height:1.2;white-space:nowrap}
+.xt .leg em{font-style:normal;font-size:11px;color:rgba(233,237,242,.6);margin-left:3px}
+.xt .pend{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#FFD166;line-height:1.2}
+.xt .nc{display:block;font-size:11px;color:var(--sb-muted);line-height:1.2}
+.xt td.s6{background:#1B7A4B} .xt td.s5{background:#1F6644} .xt td.s4{background:#1E503A}
+.xt td.s3{background:#26303D} .xt td.s2{background:#4A2A2A} .xt td.s1{background:#5E2A26} .xt td.s0{background:#7A2620}
+.xt td.s6 .leg,.xt td.s0 .leg{font-weight:700}
+.xt tr:hover th.rowh{color:#FFD166}
+.gkey{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--sb-muted);align-items:center}
+.gkey span{display:inline-flex;align-items:center;gap:6px}
+.gkey i{width:14px;height:14px;display:inline-block}
+
+/* ---------- leaders ---------- */
+.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.board{background:var(--surface);border:1px solid var(--rule)}
+.board h3{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase;padding:14px 16px 4px;line-height:1}
+.board .sub{font-size:13px;color:var(--muted);padding:0 16px 10px;border-bottom:3px solid var(--ink)}
+.board dl{margin:0;padding:4px 16px 12px}
+.board .cat{font-family:var(--data);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:12px}
+.board .ent{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:5px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.board .ent:last-child{border-bottom:0}
+.board dt{font-weight:600;font-size:15px}
+.board dt small{font-weight:400;color:var(--muted);font-size:13px;margin-left:4px}
+.board dd{margin:0;font-family:var(--data);font-weight:800;font-style:italic;font-size:22px;font-variant-numeric:tabular-nums}
+
+/* ---------- faces ---------- */
+.faces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.face{background:var(--surface);border:1px solid var(--rule);display:grid;grid-template-rows:auto 1fr}
+.face .top-strip{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.arche{font-family:var(--data);font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+.arche.villain{color:var(--accent)} .arche.hero{color:var(--win)} .arche.star{color:var(--gold)} .arche.ice{color:var(--q)}
+.face .team{font-family:var(--data);font-weight:700;font-size:15px;display:flex;align-items:center}
+.face .in{padding:14px 16px 18px;display:grid;gap:10px;align-content:start}
+.face h3{font-family:var(--display);font-weight:800;font-size:30px;text-transform:uppercase;line-height:.95}
+.face .meta{font-family:var(--data);font-size:15px;color:var(--muted)}
+.face p{font-size:15px;color:var(--ink-2)}
+.attrs{display:flex;gap:6px;flex-wrap:wrap}
+.attr{font-family:var(--data);font-size:14px;border:1px solid var(--rule);padding:2px 8px;border-radius:2px;background:var(--surface-2);white-space:nowrap}
+.attr b{font-weight:800;font-variant-numeric:tabular-nums}
+.attr.hi b{color:var(--win)} .attr.lo b{color:var(--loss)}
+
+/* ---------- rivalries ---------- */
+.rivals{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px;align-items:start}
+.feud{display:grid;gap:0;background:var(--surface);border:1px solid var(--rule)}
+.feud article{padding:16px 20px;border-bottom:1px solid var(--rule);display:grid;gap:6px}
+.feud article:last-child{border-bottom:0}
+.feud h3{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1}
+.feud .rec{font-family:var(--data);font-weight:700;font-size:16px;color:var(--accent);letter-spacing:.03em}
+.feud p{font-size:15px;color:var(--ink-2)}
+.bros{background:var(--surface);border:1px solid var(--rule);padding:18px 20px}
+.bros h3{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1}
+.bros .sub{font-size:14px;color:var(--muted);margin:6px 0 12px}
+.bros ul{list-style:none;margin:0;padding:0}
+.bros li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.bros li:last-child{border-bottom:0}
+.bros li .split{font-family:var(--data);font-weight:700;font-size:15px;white-space:nowrap}
+
+
+/* ---------- voices ---------- */
+.pulls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:4px}
+.pull{border-left:4px solid var(--accent);padding:4px 0 4px 14px;display:grid;gap:6px}
+.pull p{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.12}
+.pull cite,.quote cite{font-style:normal;font-family:var(--data);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center}
+.panelgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.pundit{background:var(--surface);border:1px solid var(--rule);display:grid;grid-template-rows:auto 1fr auto}
+.pundit .id{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--rule)}
+.mono{width:48px;height:48px;flex:none;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:21px;color:#fff;letter-spacing:.02em}
+.pundit .nm{font-weight:700;font-size:16px;line-height:1.2}
+.pundit .rl{font-family:var(--data);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pundit blockquote{margin:0;padding:16px 16px 10px;font-family:var(--display);font-weight:700;font-size:21px;line-height:1.13}
+.pundit blockquote::before{content:"\201C";display:block;font-size:54px;line-height:.6;color:var(--accent);margin-bottom:6px}
+.pundit .ctx{padding:0 16px 16px;font-family:var(--data);font-size:14px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.mz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.quote{background:var(--surface);border:1px solid var(--rule);padding:18px 20px;display:grid;gap:10px;align-content:start}
+.quote .about{font-family:var(--data);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.quote p{font-size:18px;line-height:1.45;font-weight:500}
+.quote p.q{font-size:15px;font-weight:600;color:var(--muted)}
+.quote p.q b{color:var(--ink)}
+@media (max-width: 1020px){ .panelgrid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width: 860px){ .mz,.pulls{grid-template-columns:minmax(0,1fr)} }
+@media (max-width: 560px){ .panelgrid{grid-template-columns:minmax(0,1fr)} }
+
+
+/* ---------- draft ---------- */
+.draft{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;align-items:start}
+.draft .stack{display:grid;gap:20px}
+table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.board th{font-family:var(--data);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.board th:nth-child(-n+3){text-align:left}
+.board td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:right;font-family:var(--data);font-size:16px;white-space:nowrap}
+.board td.rk{text-align:left;font-weight:800;font-style:italic;font-size:20px;color:var(--accent);width:36px}
+.board td.pl{text-align:left;font-family:var(--body);font-weight:700;font-size:15px;white-space:normal}
+.board td.pl small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.board td.cl{text-align:left}
+.board td.ca{font-weight:800}
+.boardwrap{overflow-x:auto}
+.envelope{background:var(--mast);color:var(--mast-ink);padding:20px 22px;display:grid;gap:10px;border-top:4px solid var(--accent)}
+.envelope h3{font-family:var(--display);font-weight:800;font-size:26px;text-transform:uppercase;line-height:1}
+.envelope p{font-size:15px;color:var(--mast-muted)}
+.envelope p b{color:var(--mast-ink)}
+.hash{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:13px;line-height:1.5;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.25);padding:10px 12px;word-break:break-all;color:#FFD166}
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rules li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:15px;color:var(--ink-2)}
+.rules li::before{content:"";width:10px;height:10px;margin-top:7px;background:var(--accent)}
+.cutline{display:grid;gap:4px;margin-top:4px}
+.cutline div{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;font-family:var(--data);font-size:16px;border-bottom:1px solid var(--rule);padding:4px 0}
+.cutline div span:first-child{color:var(--muted)}
+.cutline div.edge{border-bottom:2px dashed var(--accent)}
+@media (max-width: 1020px){ .draft{grid-template-columns:minmax(0,1fr)} }
+
+/* ---------- footer ---------- */
+footer{margin-top:48px;background:var(--mast);color:var(--mast-muted);padding-block:26px 30px;font-size:14px}
+footer .wrap{display:grid;gap:8px}
+footer b{color:var(--mast-ink)}
+footer .fwm{font-family:var(--display);font-weight:900;font-size:26px;color:var(--mast-ink);text-transform:uppercase}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px){
+  .top{grid-template-columns:minmax(0,1fr)}
+  .race{grid-template-columns:minmax(0,1fr)}
+  .rivals{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width: 860px){
+  .cards,.bowls,.boards,.faces{grid-template-columns:minmax(0,1fr)}
+  .statstrip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .statstrip div:nth-child(2){border-right:0}
+  .statstrip div:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+}
+@media (max-width: 560px){
+  .wrap{padding-inline:16px}
+  .matchup{min-height:170px}
+  .side{padding:18px 16px}
+  .side .path{display:none}
+  .lead-body{padding:18px 16px 22px}
+  .lrow,.axis{grid-template-columns:52px minmax(0,1fr)}
+  .lrow .left{grid-column:2}
+  .axis > span:last-child{display:none}
+  .edition{text-align:left}
+}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Touchline home">
+      <span class="wordmark">Touchline</span>
+      <span class="desk">The Academy Desk</span>
+    </a>
+    <div class="edition">Edition <b>1</b> · <b>Wednesday, May 4, 2022</b><br>Two matchdays left in the USL Academy</div>
+  </div>
+  <nav class="nav" aria-label="Sections">
+    <div class="wrap">
+      <ul>
+        <li><a href="#top">Top story</a></li>
+        <li><a href="#panel">The panel</a></li>
+        <li><a href="#race">Race for the world</a></li>
+        <li><a href="#mixed">Mixed zone</a></li>
+        <li><a href="#bowls">Bowl season</a></li>
+        <li><a href="#grid">The Grid</a></li>
+        <li><a href="#draft">Draft</a></li>
+        <li><a href="#leaders">Leaders</a></li>
+        <li><a href="#faces">Faces</a></li>
+        <li><a href="#rivals">Feuds</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="ticker" role="region" aria-label="Scores and fixtures">
+  <div class="ticker-label">Scores &amp; fixtures</div>
+  <div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div>
+</div>
+
+<main id="top">
+  <div class="wrap">
+    <section class="top">
+      <article class="lead">
+        <div class="matchup" aria-label="FIFA Youth League final: North Carolina versus Michigan">
+          <div class="side unc">
+            <span class="full">North Carolina</span>
+            <span class="abbr">UNC</span>
+            <span class="path">2 conceded in 11 games</span>
+          </div>
+          <div class="vs">
+            <div class="v">VS</div>
+            <div class="d">Sun · May 15</div>
+            <div class="t">15:00 · Italy</div>
+          </div>
+          <div class="side mich">
+            <span class="full">Michigan</span>
+            <span class="abbr">MICH</span>
+            <span class="path">61 scored in 11 games</span>
+          </div>
+        </div>
+        <div class="lead-body">
+          <div class="kicker">FIFA Youth League · Final</div>
+          <h1>The world's final four was all American</h1>
+          <p class="dek">128 of the planet's best youth sides entered. Four USL Academy clubs reached the semi-finals. On May 15, North Carolina and Michigan play for the title in Italy.</p>
+          <div class="byline">Touchline Academy Desk</div>
+          <div class="copy">
+            <p>Barcelona were beaten by UCLA twice in the group stage, and then again by Florida, 6–2. Georgia took Manchester United's under-23s apart 6–1 and eliminated Arsenal's. Michigan beat Paris Saint-Germain's under-19s twice and put 12 past Monterrey. UCLA, North Carolina, Michigan and Georgia each won all six group games.</p>
+            <p>By April the competition had become a domestic affair played abroad. Florida knocked Georgia out in extra time, 3–2. Michigan won the first semi-final 3–2 in Gainesville. In the second, league champions UCLA drew 1–1 with North Carolina and went out on penalties, ending their hopes of a double.</p>
+            <p>The final is a contrast in styles. North Carolina have conceded twice in 11 Youth League games. Michigan have scored 61. This season, Michigan have not beaten the Tar Heels: they lost 4–1 and drew 2–2 in preseason, then lost 2–0 in the league. Thirteen days after the final, the two meet again in the league.</p>
+          </div>
+          <div class="pulls">
+            <div class="pull"><p>&ldquo;We've played Michigan three times this season and they haven't beaten us. I'd be a fool to think that means anything in a final.&rdquo;</p><cite><span class="chip"><i style="background:#7BAFD4"></i><i style="background:#13294B"></i></span>North Carolina head coach</cite></div>
+            <div class="pull"><p>&ldquo;Seventh in the league and one game from being the best youth team on the planet. Judge us on the 15th.&rdquo;</p><cite><span class="chip"><i style="background:#00274C"></i><i style="background:#FFCB05"></i></span>Michigan head coach</cite></div>
+          </div>
+          <div class="statstrip">
+            <div><div class="n">4/4</div><div class="l">semi-finalists from the USL Academy</div></div>
+            <div><div class="n">24–0</div><div class="l">group record of UCLA, UNC, Michigan and Georgia</div></div>
+            <div><div class="n">12–0</div><div class="l">Michigan over Monterrey U20, the biggest win of the run</div></div>
+            <div><div class="n">6</div><div class="l">clean sheets for UNC's <a class="tl-x" href="#" data-go="/almanac/players/20046522">David Ochoa</a>, the most in the competition</div></div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="rail" aria-label="USL Academy standings">
+        <div class="rail-head"><h2>USL Academy</h2><span>After 40 of 42</span></div>
+        <table class="stand" id="standings">
+          <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col">GD</th><th scope="col">Pts</th><th scope="col">Form</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--q)"></i>Top 5: FIFA Youth League</span>
+          <span><i class="sw" style="background:var(--r)"></i>Relegated to College Championship League</span>
+          <span>Dashed line: the Sixteen above, the rest below</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="sec" aria-label="More headlines">
+      <div class="cards">
+        <article class="card">
+          <div class="big"><div class="fig">15<small>th</small></div><div class="cap">Media prediction for UCLA in August</div></div>
+          <div class="in">
+            <div class="kicker">Champions</div>
+            <h3>No stars. No problem. UCLA are champions.</h3>
+            <p>UCLA have the lowest-rated squad of the Sixteen and no player rated above 131. They won the title by 11 points, did the double over seven of their fifteen rivals, and topped the table of results between the Sixteen with 63 points from 28 games. Only North Carolina beat them twice.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="big"><div class="fig">10<small>pts</small></div><div class="cap">Tennessee, one behind Duke with two to play</div></div>
+          <div class="in">
+            <div class="kicker">Relegation</div>
+            <h3>Tennessee's survival runs through Alabama</h3>
+            <p>Michigan State are already down after 38 defeats in 40. One more place drops to the College Championship League. Duke have 11 points and go to Oregon and Oklahoma. Tennessee have 10 and visit Alabama on Sunday, then finish at winless Michigan State. Alabama's board expects a top-five finish, and they are sixth. They can't afford to be generous.</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="big"><div class="fig">104</div><div class="cap">Michigan's average ability, highest of the Sixteen</div></div>
+          <div class="in">
+            <div class="kicker">The paradox</div>
+            <h3>Seventh at home. One win from the world.</h3>
+            <p>On paper, Michigan have the most talented squad in the league. They have one win in their last five league games and are fighting to reach the top five. They have also scored 61 goals in 11 Youth League games and play for its title on May 15. Four days after Ohio State thrashed them 4–1, Michigan beat them 3–1 at home in the Rose Bowl quarter-final.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="panel">
+      <div class="sec-head"><h2>The panel</h2><span class="aside">Touchline's analysts on the week's big questions</span></div>
+      <div class="panelgrid">
+        <article class="pundit">
+          <div class="id"><span class="mono" style="background:#D0281C">DR</span><div><div class="nm">Dale Rourke</div><div class="rl">Host · Rourke Unfiltered</div></div></div>
+          <blockquote>Everybody's calling UCLA a triumph of the system. Every club in this league runs the same system! UCLA won because everyone else blinked. And here's what nobody wants to hear: Michigan are the most overrated team in America, and they're going to win the world anyway.</blockquote>
+          <div class="ctx">On UCLA's title and Michigan's paradox</div>
+        </article>
+        <article class="pundit">
+          <div class="id"><span class="mono" style="background:#1F5FBF">NO</span><div><div class="nm">Nadia Okafor</div><div class="rl">Analyst · The Whiteboard</div></div></div>
+          <blockquote>On the 15th everyone will talk about the Tar Heels' attack. Watch the other end. They've conceded two goals in eleven Youth League games, and the opponents included Bayern, Lyon and Rennes. Six clean sheets for Ochoa isn't luck. That back line always knows where it is.</blockquote>
+          <div class="ctx">Former Academy centre-back, previewing the final</div>
+        </article>
+        <article class="pundit">
+          <div class="id"><span class="mono" style="background:#1E8A55">TB</span><div><div class="nm">Theo Brandt</div><div class="rl">Numbers · The Ledger</div></div></div>
+          <blockquote>Two numbers. Michigan's squad averages 104, the best in the league. UCLA's averages 95, the worst of the Sixteen. The worst squad won by eleven points and the best finished seventh. If ability were destiny, nobody would bother watching.</blockquote>
+          <div class="ctx">On talent versus results</div>
+        </article>
+        <article class="pundit">
+          <div class="id"><span class="mono" style="background:#5A6576">WK</span><div><div class="nm">Walt Kearney</div><div class="rl">Columnist · Kearney's Corner</div></div></div>
+          <blockquote>Everyone's watching the top of the table. I'll be watching Tennessee: ten points, a goal difference you need a calculator for, and a Sunday trip to Alabama with their season on the line. The Sixteen get the trophies. The rest get the heartbreak, and heartbreak is what this sport is made of.</blockquote>
+          <div class="ctx">Forty years on the college beat, on the drop</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="race">
+      <div class="sec-head"><h2>Six clubs, three tickets</h2><span class="aside">The top five in the USL Academy qualify for next season's FIFA Youth League</span></div>
+      <div class="race">
+        <div class="panel">
+          <h3>The race for the world</h3>
+          <p class="sub">UCLA (99) and North Carolina (88) are through. Solid bars show current points, and the hatched area shows the most each club can reach with two wins. Ohio State (72) can reach 78 at most and are out.</p>
+          <div class="ladder" id="ladder"></div>
+          <div class="axis" aria-hidden="true"><span></span><div class="ticks" id="ticks"></div><span></span></div>
+          <p class="note">Miami and USC are the league's two hottest teams: five straight wins for Miami and four for USC. They meet on Saturday. USC's run-in is the hardest of anyone's: Miami away, then Alabama away on the final day. Holders of the Youth League may also get an automatic place, which isn't confirmed yet. If they do and Michigan win on May 15 but finish outside the top five, it would make six American clubs next season.</p>
+        </div>
+        <div class="panel">
+          <h3>The run-in</h3>
+          <p class="sub">Remaining league fixtures, plus the date that matters most</p>
+          <div class="fx" id="fixtures"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="mixed">
+      <div class="sec-head"><h2>The mixed zone</h2><span class="aside">What they said this week · collected by touchline reporter Jess Ocampo</span></div>
+      <div class="mz">
+        <article class="quote">
+          <div class="about">On the Youth League exit to Florida</div>
+          <p>&ldquo;Florida got lucky in extra time. Put that in your paper. We're fourth, we're going back to the world stage, and we'll see them again before this season's over.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#BA0C2F"></i><i style="background:#000"></i></span><a class="tl-x" href="#" data-go="/almanac/players/2002075652">Steve González</a> · Georgia striker</cite>
+        </article>
+        <article class="quote">
+          <div class="about">On the final</div>
+          <p>&ldquo;Michigan score a lot of goals against teams that can't defend. We're not one of those teams.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#7BAFD4"></i><i style="background:#13294B"></i></span><a class="tl-x" href="#" data-go="/almanac/players/2002078850">Robert Korshunov</a> · North Carolina striker, 17</cite>
+        </article>
+        <article class="quote">
+          <div class="about">Q&amp;A · the prodigy</div>
+          <p class="q"><b>Touchline:</b> Scouts say you have the highest ceiling in the league. Does that mean anything to you?</p>
+          <p>&ldquo;Not really. Ceilings are for later. Right now I'm fifteen and I'm trying to get more minutes.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#BF5700"></i><i style="background:#fff"></i></span><a class="tl-x" href="#" data-go="/almanac/players/2002188876">George Johnson</a> · Texas striker, 15</cite>
+        </article>
+        <article class="quote">
+          <div class="about">On the title</div>
+          <p>&ldquo;In August the media had us fifteenth. I kept the clipping on my desk all year. Nobody in that dressing room is a star, and every one of them is a champion.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#2D68C4"></i><i style="background:#F2A900"></i></span>UCLA head coach</cite>
+        </article>
+        <article class="quote">
+          <div class="about">On Sunday's visit of Tennessee</div>
+          <p>&ldquo;Top five is the job. Tennessee need points, and I respect that. But sentiment isn't in my job description. We go out on Sunday to win.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#9E1B32"></i><i style="background:#fff"></i></span>Alabama head coach</cite>
+        </article>
+        <article class="quote">
+          <div class="about">Asked about his reputation</div>
+          <p>&ldquo;Somebody said I have a temper? Who said that? Tell him to come and say it to my face.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#841617"></i><i style="background:#FDF9D8"></i></span><a class="tl-x" href="#" data-go="/almanac/players/2002188782">Alan Robles</a> · Oklahoma wing-back, 16</cite>
+        </article>
+        <article class="quote">
+          <div class="about">Before the final</div>
+          <p>&ldquo;It's a final. You play it like any other game. If I get on, I'll help the team. If I don't, I'll be the loudest one on the bench.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#7BAFD4"></i><i style="background:#13294B"></i></span><a class="tl-x" href="#" data-go="/almanac/players/2002189216">Greg Froschauer</a> · North Carolina striker, 15</cite>
+        </article>
+        <article class="quote">
+          <div class="about">On whether the numbers lie</div>
+          <p>&ldquo;People keep telling me we've got the best squad on paper. We don't play on paper. Seventh is seventh. Win the final, then talk to me.&rdquo;</p>
+          <cite><span class="chip"><i style="background:#00274C"></i><i style="background:#FFCB05"></i></span>Michigan head coach</cite>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="bowls">
+      <div class="sec-head"><h2>Bowl season</h2><span class="aside">Quarter-finals played May 4 · semi-finals May 11 · finals May 18</span></div>
+      <div class="bowls">
+        <article class="bowl">
+          <h3>The Cotton Bowl</h3>
+          <div class="when">An all-SEC final four</div>
+          <ul>
+            <li><span>Alabama</span><span>15–1 Utah State</span></li>
+            <li><span>Florida</span><span>8–0 Nevada</span></li>
+            <li><span>Georgia</span><span>8–0 at Texas State</span></li>
+            <li><span>LSU</span><span>4–0 at Rice</span></li>
+          </ul>
+        </article>
+        <article class="bowl">
+          <h3>The Rose Bowl</h3>
+          <div class="when">Michigan, with a world final in between</div>
+          <ul>
+            <li><span>Michigan</span><span>3–1 Ohio State</span></li>
+            <li><span>UCLA</span><span>8–1 at Notre Dame</span></li>
+            <li><span>USC</span><span>3–0 Gonzaga</span></li>
+            <li><span>Washington</span><span>6–0 at Colorado State</span></li>
+          </ul>
+        </article>
+        <article class="bowl">
+          <h3>The Fiesta Bowl</h3>
+          <div class="when">North Carolina, the other finalist</div>
+          <ul>
+            <li><span>North Carolina</span><span>6–2 Florida State</span></li>
+            <li><span>Miami</span><span>3–1 Texas</span></li>
+            <li><span>Oklahoma</span><span>8–1 Wake Forest</span></li>
+            <li><span>Texas Tech</span><span>6–0 at Marshall</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <section class="band" id="grid">
+    <div class="wrap">
+      <div class="sec-head"><h2>The Grid</h2><span class="aside">Every league meeting between the Sixteen</span></div>
+      <p class="intro">Read across. Each cell shows the <b>row club's</b> score first in both league meetings with the column club, and whether it was played at home or away. Cell colour shows points taken from the pairing: deep green for a double, deep red for being doubled.</p>
+      <div class="gridwrap"><table class="xt" id="xt"></table></div>
+      <div class="gkey">
+        <span><i style="background:#1B7A4B"></i>6 pts: did the double</span>
+        <span><i style="background:#1E503A"></i>4 pts</span>
+        <span><i style="background:#26303D"></i>3 pts: honours even</span>
+        <span><i style="background:#5E2A26"></i>1 pt</span>
+        <span><i style="background:#7A2620"></i>0 pts: doubled</span>
+        <span style="color:#FFD166">Yellow date = still to play</span>
+        <span>n/c = not captured in this edition's data</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="sec" id="draft">
+      <div class="sec-head"><h2>Draft watch</h2><span class="aside">USL Academy to USL Premier · June 20</span></div>
+      <div class="draft">
+        <div class="panel">
+          <h3>The early big board</h3>
+          <p class="sub">The top ten over-23 players at the Sixteen, ranked by current ability. Season line covers all competitions. The class and eligibility get confirmed from birth dates before lottery night.</p>
+          <div class="boardwrap">
+          <table class="board">
+            <thead><tr><th>#</th><th>Player</th><th>Club</th><th>Ability</th><th>Ceiling</th><th>G</th><th>A</th><th>Rating</th></tr></thead>
+            <tbody>
+              <tr><td class="rk">1</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/92074020">Christian Pulisic</a><small>Winger / attacking mid · USA</small></td><td class="cl">UNC</td><td class="ca">161</td><td>170</td><td>19</td><td>28</td><td>7.85</td></tr>
+              <tr><td class="rk">2</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/72048035">Weston McKennie</a><small>Midfielder · USA</small></td><td class="cl">Miami</td><td class="ca">155</td><td>165</td><td>7</td><td>6</td><td>7.24</td></tr>
+              <tr><td class="rk">3</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/72044918">Tyler Adams</a><small>Defensive mid / right back · USA</small></td><td class="cl">LSU</td><td class="ca">144</td><td>155</td><td>3</td><td>8</td><td>7.16</td></tr>
+              <tr><td class="rk">4</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/14181052">Ezequiel Barco</a><small>Attacking mid · Argentina</small></td><td class="cl">Alabama</td><td class="ca">141</td><td>150</td><td>16</td><td>26</td><td>7.70</td></tr>
+              <tr><td class="rk">5</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/20041987">Mark McKenzie</a><small>Centre-back · USA</small></td><td class="cl">UCLA</td><td class="ca">131</td><td>138</td><td>8</td><td>1</td><td>7.33</td></tr>
+              <tr><td class="rk">6</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/14167330">Milton Valenzuela</a><small>Left back / wing-back · Argentina</small></td><td class="cl">USC</td><td class="ca">127</td><td>142</td><td>11</td><td>14</td><td>7.62</td></tr>
+              <tr><td class="rk">7</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/72047555">Auston Trusty</a><small>Centre-back · USA</small></td><td class="cl">Notre Dame</td><td class="ca">126</td><td>137</td><td>9</td><td>1</td><td>7.29</td></tr>
+              <tr><td class="rk">8</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/91158046">Timothy Tillman</a><small>Left mid / attacking mid · Germany</small></td><td class="cl">Texas</td><td class="ca">125</td><td>130</td><td>15</td><td>20</td><td>7.71</td></tr>
+              <tr><td class="rk">9</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/77047953">Matías Succar</a><small>Striker · Peru</small></td><td class="cl">Oklahoma</td><td class="ca">123</td><td>137</td><td>33</td><td>8</td><td>7.55</td></tr>
+              <tr><td class="rk">10</td><td class="pl"><a class="tl-x" href="#" data-go="/almanac/players/29162923">Marlon Fossey</a><small>Right back / wing-back · USA</small></td><td class="cl">Washington</td><td class="ca">123</td><td>130</td><td>10</td><td>8</td><td>7.35</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p class="note">About 60 of the Sixteen's players are 23 now. Florida State lose seven of them and champions UCLA lose six. UNC, Miami, LSU and Alabama each lose their best player.</p>
+        </div>
+        <div class="stack">
+          <div class="envelope">
+            <div class="kicker" style="color:#FFD166">Lottery · sealed May 6, 2022</div>
+            <h3>The envelope is sealed</h3>
+            <p>Touchline drew the lottery seed today and locked it away. This is its fingerprint:</p>
+            <div class="hash">SHA-256 · b36b16652ef58646885c57be7845174d6e1e28b775c4127fa90b9d3f34877bee</div>
+            <p>On lottery night we open the envelope. <b>Each drafting club's round-one slot comes from the seed plus its name</b>, so anyone can check the result, and nobody can change it, including us.</p>
+          </div>
+          <div class="panel">
+            <h3>How the draft works</h3>
+            <ul class="rules">
+              <li>Every over-23 player at the Sixteen enters the draft.</li>
+              <li>USL Premier clubs draft from the top of the table down, up to four picks each. With 60 grads, that's the top 15.</li>
+              <li>The lottery sets the round-one order, and later rounds snake back.</li>
+            </ul>
+            <p class="sub" style="margin:14px 0 6px">If the class is about 60, the 15th and last drafting place goes to the top of the Premier's bottom half. Two games left:</p>
+            <div class="cutline">
+              <div class="edge"><span>15th</span><span>Inter Miami</span><b>55</b></div>
+              <div><span>16th</span><span>D.C. United</span><b>53</b></div>
+              <div><span>17th</span><span>Philadelphia</span><b>53</b></div>
+              <div><span>18th</span><span>Cincinnati</span><b>52</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pulls" style="margin-top:20px">
+        <div class="pull"><p>&ldquo;Whoever wins that lottery gets the best player in college soccer, and it isn't close. Columbus could finish top and pick 15th. I love it.&rdquo;</p><cite><span class="mono" style="background:#D0281C;width:22px;height:22px;font-size:11px;margin-right:8px">DR</span>Dale Rourke · Rourke Unfiltered</cite></div>
+        <div class="pull"><p>&ldquo;The champions lose six seniors. UCLA's reward for winning the league is a rebuild.&rdquo;</p><cite><span class="mono" style="background:#1E8A55;width:22px;height:22px;font-size:11px;margin-right:8px">TB</span>Theo Brandt · The Ledger</cite></div>
+      </div>
+    </section>
+
+    <section class="sec" id="leaders">
+      <div class="sec-head"><h2>Leaders</h2><span class="aside">As of May 4, 2022</span></div>
+      <div class="boards">
+        <div class="board">
+          <h3>USL Academy</h3>
+          <div class="sub">League games only, all 22 clubs</div>
+          <dl>
+            <div class="cat">Goals</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/18108540">Jonathan David</a><small>Miami</small></dt><dd>33</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/77047953">Matías Succar</a><small>Oklahoma</small></dt><dd>29</dd></div>
+            <div class="cat">Assists</div>
+            <div class="ent"><dt>J. Torres<small>Georgia</small></dt><dd>20</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/20050127">Ted Ku-DiPietro</a><small>Oklahoma</small></dt><dd>20</dd></div>
+            <div class="cat">Average rating</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/14201349">Matko Miljevic</a><small>Michigan</small></dt><dd>7.94</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/51055587">Brandon Vázquez</a><small>Georgia</small></dt><dd>7.90</dd></div>
+            <div class="cat">Clean sheets</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/91180010">Brady Scott</a><small>Miami</small></dt><dd>11</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/72053584">Gabriel Słonina</a><small>Alabama, age 17</small></dt><dd>11</dd></div>
+            <div class="cat">Yellow cards</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/2000050334">Raul Aguilera</a><small>Ohio State</small></dt><dd>9</dd></div>
+          </dl>
+        </div>
+        <div class="board">
+          <h3>The Sixteen</h3>
+          <div class="sub">Every competition, players at the 16 clubs</div>
+          <dl>
+            <div class="cat">Goals</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/28116305">Folarin Balogun</a><small>Michigan</small></dt><dd>46</dd></div>
+            <div class="ent"><dt>McMaster · Vázquez · Dike<small>UCLA · Georgia · Florida</small></dt><dd>43</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/72053050">Justin Rennicks</a><small>North Carolina</small></dt><dd>41</dd></div>
+            <div class="cat">Assists</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/28106881">Samuel Shashoua</a><small>Florida</small></dt><dd>49</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/72047931">Paxton Pomykal</a><small>UCLA</small></dt><dd>33</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/77051575">Marcos López</a><small>Ohio State</small></dt><dd>31</dd></div>
+            <div class="cat">Average rating</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/72047931">Paxton Pomykal</a><small>UCLA</small></dt><dd>8.17</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/14201349">Matko Miljevic</a><small>Michigan</small></dt><dd>8.09</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/28106881">Samuel Shashoua</a><small>Florida</small></dt><dd>8.05</dd></div>
+          </dl>
+        </div>
+        <div class="board">
+          <h3>World stage</h3>
+          <div class="sub">FIFA Youth League, all 128 clubs</div>
+          <dl>
+            <div class="cat">Goals</div>
+            <div class="ent"><dt>Nesta Zahui<small>Feyenoord U18</small></dt><dd>12</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/51055587">Brandon Vázquez</a><small>Georgia</small></dt><dd>11</dd></div>
+            <div class="cat">Assists</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/28106881">Samuel Shashoua</a><small>Florida</small></dt><dd>10</dd></div>
+            <div class="ent"><dt>Patrik Wålemark<small>Feyenoord U18</small></dt><dd>9</dd></div>
+            <div class="cat">Player of the Match</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/28106881">Samuel Shashoua</a><small>Florida</small></dt><dd>6</dd></div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/92074020">Christian Pulisic</a><small>North Carolina</small></dt><dd>5</dd></div>
+            <div class="cat">Clean sheets</div>
+            <div class="ent"><dt><a class="tl-x" href="#" data-go="/almanac/players/20046522">David Ochoa</a><small>North Carolina</small></dt><dd>6</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="faces">
+      <div class="sec-head"><h2>Faces of the future</h2><span class="aside">Home-grown youngsters to watch, profiled from the club dossiers</span></div>
+      <div class="faces">
+        <article class="face">
+          <div class="top-strip"><span class="arche star">The prodigy</span><span class="team"><span class="chip"><i style="background:#BF5700"></i><i style="background:#fff"></i></span>Texas</span></div>
+          <div class="in">
+            <h3><a class="tl-x" href="#" data-go="/almanac/players/2002188876">George Johnson</a></h3>
+            <div class="meta">15 · Striker · North Port, Florida</div>
+            <p>He has played six times, scored three goals and averaged 7.45. The scouting file is harder to believe: his ceiling of 180 is the highest of the 419 players on the Sixteen's books. He is level-headed and composed, and he's nowhere near finished.</p>
+            <div class="attrs"><span class="attr hi">Potential <b>180</b></span><span class="attr">Temperament <b>15</b></span><span class="attr">Professionalism <b>14</b></span></div>
+          </div>
+        </article>
+        <article class="face">
+          <div class="top-strip"><span class="arche villain">The villain in waiting</span><span class="team"><span class="chip"><i style="background:#BA0C2F"></i><i style="background:#000"></i></span>Georgia</span></div>
+          <div class="in">
+            <h3><a class="tl-x" href="#" data-go="/almanac/players/2002075652">Steve González</a></h3>
+            <div class="meta">22 · Striker · 27 goals this season</div>
+            <p>He scores, talks and burns bridges. González is volatile and confrontational with the press, hungry for more, and has the shortest fuse at Georgia. Reporters on the Georgia beat have learned to keep their questions brief.</p>
+            <div class="attrs"><span class="attr lo">Temperament <b>5</b></span><span class="attr lo">Sportsmanship <b>7</b></span><span class="attr hi">Ambition <b>18</b></span></div>
+          </div>
+        </article>
+        <article class="face">
+          <div class="top-strip"><span class="arche ice">Two strikers, one dressing room</span><span class="team"><span class="chip"><i style="background:#7BAFD4"></i><i style="background:#13294B"></i></span>UNC</span></div>
+          <div class="in">
+            <h3>Korshunov &amp; Froschauer</h3>
+            <div class="meta">17 &amp; 15 · both strikers · both North Carolina</div>
+            <p><a class="tl-x" href="#" data-go="/almanac/players/2002078850">Robert Korshunov</a>, 17, has 23 goals and 14 assists, a confrontational streak and a sportsmanship rating of 6. <a class="tl-x" href="#" data-go="/almanac/players/2002189216">Greg Froschauer</a>, 15, is his opposite: unflappable, big-game rating 17, temperament 19. One day they will compete for the same shirt.</p>
+            <div class="attrs"><span class="attr lo">Korshunov sportsmanship <b>6</b></span><span class="attr hi">Froschauer temperament <b>19</b></span></div>
+          </div>
+        </article>
+        <article class="face">
+          <div class="top-strip"><span class="arche hero">The unsung</span><span class="team"><span class="chip"><i style="background:#9E1B32"></i><i style="background:#fff"></i></span>Alabama</span></div>
+          <div class="in">
+            <h3><a class="tl-x" href="#" data-go="/almanac/players/2002074694">Jeremy Finnen</a></h3>
+            <div class="meta">21 · Right winger · 12 assists</div>
+            <p>He wants nothing except the next game. His ambition rating of 2 is the lowest in Alabama's squad, and his consistency of 16 is among its highest. On a team whose big-match temperament is the league's most fragile, he never flinches.</p>
+            <div class="attrs"><span class="attr hi">Consistency <b>16</b></span><span class="attr lo">Ambition <b>2</b></span><span class="attr">Sportsmanship <b>15</b></span></div>
+          </div>
+        </article>
+        <article class="face">
+          <div class="top-strip"><span class="arche villain">The short fuse</span><span class="team"><span class="chip"><i style="background:#841617"></i><i style="background:#FDF9D8"></i></span>Oklahoma</span></div>
+          <div class="in">
+            <h3><a class="tl-x" href="#" data-go="/almanac/players/2002188782">Alan Robles</a></h3>
+            <div class="meta">16 · Left wing-back · Mexico</div>
+            <p>His temperament rating is 1 out of 20, and he is short-tempered and confrontational in front of a microphone. So far Oklahoma have kept him away from first-team football. Every referee in the league will be glad of it.</p>
+            <div class="attrs"><span class="attr lo">Temperament <b>1</b></span><span class="attr lo">Sportsmanship <b>5</b></span></div>
+          </div>
+        </article>
+        <article class="face">
+          <div class="top-strip"><span class="arche ice">Ice in the veins</span><span class="team"><span class="chip"><i style="background:#841617"></i><i style="background:#FDF9D8"></i></span>Oklahoma</span></div>
+          <div class="in">
+            <h3><a class="tl-x" href="#" data-go="/almanac/players/2002188773">Caio Lucas</a></h3>
+            <div class="meta">16 · Wing-back / midfielder · Brazil</div>
+            <p>He plays in the same squad as Robles and could hardly be more different. He is unflappable, with a big-game rating of 16, pressure 17 and temperament 18. His potential of 149 is the highest among Oklahoma's youngsters.</p>
+            <div class="attrs"><span class="attr hi">Temperament <b>18</b></span><span class="attr hi">Pressure <b>17</b></span><span class="attr">Potential <b>149</b></span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="rivals">
+      <div class="sec-head"><h2>Feuds, by the numbers</h2><span class="aside">Rivalries written by results, not tradition</span></div>
+      <div class="rivals">
+        <div class="feud">
+          <article>
+            <div class="rec">UNC 2 wins · UCLA 0 · 1 draw, UNC through on penalties</div>
+            <h3>The champions' kryptonite</h3>
+            <p>UCLA lost only five league games to the Sixteen, and two of them were against North Carolina (4–3, 3–1). Then the Tar Heels ended UCLA's Youth League run on penalties after a 1–1 draw. Whatever the champions have, UNC seem to have the answer.</p>
+          </article>
+          <article>
+            <div class="rec">Florida 3 · Alabama 0 · aggregate 9–2</div>
+            <h3>Gainesville owns Alabama</h3>
+            <p>Florida won 4–1 in the league, 4–1 in SEC play and 1–0 in February. Georgia also beat Alabama 6–1 on New Year's Day. Alabama had beaten Georgia 3–1 in August and 5–2 in SEC play. Against Florida they have nothing.</p>
+          </article>
+          <article>
+            <div class="rec">Florida 2 · Georgia 2 · 1 draw · goals 10–12</div>
+            <h3>The most even fight in the league</h3>
+            <p>They have met five times: two preseason wins for Georgia, a 2–2 draw, a 3–2 Florida win in the league, and a 3–2 extra-time win for Florida in the Youth League quarter-final that knocked Georgia off the world stage.</p>
+          </article>
+          <article>
+            <div class="rec">UCLA 2 · USC 0 · goals 8–1</div>
+            <h3>Los Angeles belongs to UCLA</h3>
+            <p>UCLA won 2–0 at home and 6–1 at USC. The Trojans are one of the form teams in the league, but not across town.</p>
+          </article>
+          <article>
+            <div class="rec">Texas 3 · Oklahoma 0</div>
+            <h3>Red River, one-way traffic</h3>
+            <p>Texas won 4–2 and 3–1 in the league and 3–0 in Big 12 play. Texas have lost four of their last five league games, but they found a way against Oklahoma.</p>
+          </article>
+        </div>
+        <div class="bros">
+          <h3>Brothers across the lines</h3>
+          <p class="sub">Real siblings, placed at rival clubs</p>
+          <ul>
+            <li><span>Brenden &amp; <a class="tl-x" href="#" data-go="/almanac/players/2000037579">Paxten Aaronson</a></span><span class="split">USC · UCLA</span></li>
+            <li><span>Jonathan &amp; <a class="tl-x" href="#" data-go="/almanac/players/83320142">Johan Gómez</a></span><span class="split">Texas · UCLA</span></li>
+            <li><span>Malik &amp; <a class="tl-x" href="#" data-go="/almanac/players/91158046">Timothy Tillman</a></span><span class="split">Oklahoma · Texas</span></li>
+            <li><span>Jake &amp; <a class="tl-x" href="#" data-go="/almanac/players/72056224">Aidan Morris</a></span><span class="split">Alabama · Texas Tech</span></li>
+            <li><span>Matías &amp; <a class="tl-x" href="#" data-go="/almanac/players/2000142229">Leandro Soria</a></span><span class="split">Florida · Oklahoma</span></li>
+            <li><span>Anthony &amp; <a class="tl-x" href="#" data-go="/almanac/players/2000155502">Nick Markanich</a></span><span class="split">Notre Dame · USC</span></li>
+            <li><span>Taylor &amp; <a class="tl-x" href="#" data-go="/almanac/players/2000033203">Zach Booth</a></span><span class="split">Texas Tech · Washington</span></li>
+          </ul>
+          <p class="note">On the final day, Jonathan Gómez's Texas host Johan's UCLA. Across Los Angeles, Paxten Aaronson's UCLA beat Brenden's USC twice. Jake Morris's Alabama took four points off Aidan's Texas Tech: 3–3 in October and 3–1 in February.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fwm">Touchline</div>
+    <p><b>Touchline is fiction.</b> It's an in-universe sports desk for a Football Manager 2022 save. Every result, table and statistic comes from the save as of the in-game date of May 4, 2022. Head coaches are referred to by role only. Real players appear only through their on-pitch record in the save.</p>
+    <p><b>All quotes are invented for this fictional universe.</b> Quotes come only from fictional players (the game's generated youngsters), from coaches identified by role, and from Touchline's fictional panel. No real person is quoted. The panel's opinions of real players cover only their performances in the save.</p>
+    <p>Edition 1. The next edition follows the next matchday.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = {"table":[{"pos":1,"team":"UCLA Bruins","ab":"UCLA","p":40,"w":32,"d":3,"l":5,"gd":109,"pts":99,"form":"WWWWL","c":["#2D68C4","#F2A900"]},{"pos":2,"team":"North Carolina Tar Heels","ab":"UNC","p":40,"w":28,"d":4,"l":8,"gd":99,"pts":88,"form":"WWWLW","c":["#7BAFD4","#13294B"]},{"pos":3,"team":"Miami Hurricanes","ab":"MIA","p":40,"w":26,"d":4,"l":10,"gd":113,"pts":82,"form":"WWWWW","c":["#F47321","#005030"]},{"pos":4,"team":"Georgia Bulldogs","ab":"UGA","p":40,"w":26,"d":3,"l":11,"gd":92,"pts":81,"form":"WLWWL","c":["#BA0C2F","#000000"]},{"pos":5,"team":"LSU Tigers","ab":"LSU","p":40,"w":25,"d":4,"l":11,"gd":88,"pts":79,"form":"WWDLD","c":["#461D7C","#FDD023"]},{"pos":6,"team":"Alabama Crimson Tide","ab":"BAMA","p":40,"w":24,"d":5,"l":11,"gd":71,"pts":77,"form":"WDWWD","c":["#9E1B32","#FFFFFF"]},{"pos":7,"team":"Michigan Wolverines","ab":"MICH","p":40,"w":22,"d":9,"l":9,"gd":93,"pts":75,"form":"WLDLL","c":["#00274C","#FFCB05"]},{"pos":8,"team":"USC Trojans","ab":"USC","p":40,"w":23,"d":6,"l":11,"gd":88,"pts":75,"form":"DWWWW","c":["#990000","#FFCC00"]},{"pos":9,"team":"Ohio State Buckeyes","ab":"OSU","p":40,"w":23,"d":3,"l":14,"gd":65,"pts":72,"form":"LLWWW","c":["#BB0000","#A7B1B7"]},{"pos":10,"team":"Texas Longhorns","ab":"TEX","p":40,"w":22,"d":5,"l":13,"gd":63,"pts":71,"form":"LWLLL","c":["#BF5700","#FFFFFF"]},{"pos":11,"team":"Notre Dame Fighting Irish","ab":"ND","p":40,"w":21,"d":7,"l":12,"gd":60,"pts":70,"form":"LWLLW","c":["#0C2340","#C99700"]},{"pos":12,"team":"Florida Gators","ab":"UF","p":40,"w":22,"d":4,"l":14,"gd":60,"pts":70,"form":"WLLWW","c":["#0021A5","#FA4616"]},{"pos":13,"team":"Washington Huskies","ab":"UW","p":40,"w":20,"d":7,"l":13,"gd":47,"pts":67,"form":"LDWWW","c":["#4B2E83","#B7A57A"]},{"pos":14,"team":"Texas Tech Red Raiders","ab":"TTU","p":40,"w":20,"d":5,"l":15,"gd":82,"pts":65,"form":"LWDWW","c":["#CC0000","#000000"]},{"pos":15,"team":"Oklahoma Sooners","ab":"OU","p":40,"w":20,"d":3,"l":17,"gd":67,"pts":63,"form":"DWLLW","c":["#841617","#FDF9D8"]},{"pos":16,"team":"Florida State Seminoles","ab":"FSU","p":40,"w":19,"d":6,"l":15,"gd":39,"pts":63,"form":"WLDWW","c":["#782F40","#CEB888"]},{"pos":17,"team":"TCU Horned Frogs","ab":"TCU","p":40,"w":6,"d":3,"l":31,"gd":-157,"pts":21,"form":"","c":["#4D1979","#A3A9AC"]},{"pos":18,"team":"Clemson Tigers","ab":"CLEM","p":40,"w":5,"d":2,"l":33,"gd":-203,"pts":17,"form":"","c":["#F56600","#522D80"]},{"pos":19,"team":"Oregon Ducks","ab":"ORE","p":40,"w":5,"d":1,"l":34,"gd":-218,"pts":16,"form":"","c":["#154733","#FEE123"]},{"pos":20,"team":"Duke Blue Devils","ab":"DUKE","p":40,"w":2,"d":5,"l":33,"gd":-223,"pts":11,"form":"","c":["#003087","#FFFFFF"]},{"pos":21,"team":"Tennessee Volunteers","ab":"TENN","p":40,"w":3,"d":1,"l":36,"gd":-197,"pts":10,"form":"","c":["#FF8200","#FFFFFF"]},{"pos":22,"team":"Michigan State Spartans","ab":"MSU","p":40,"w":0,"d":2,"l":38,"gd":-238,"pts":2,"form":"","c":["#18453B","#FFFFFF"]}],"ct":{"BAMA":{"UGA":[{"gf":3,"ga":1,"h":true,"d":"Aug 14"},{"gf":1,"ga":6,"h":false,"d":"Jan 1"}],"FSU":[{"gf":0,"ga":0,"h":false,"d":"Aug 21"},{"gf":4,"ga":1,"h":true,"d":"Nov 13"}],"UF":[{"gf":1,"ga":4,"h":true,"d":"Aug 25"},{"gf":0,"ga":1,"h":false,"d":"Feb 5"}],"OSU":[{"gf":1,"ga":0,"h":true,"d":"Aug 28"},{"gf":3,"ga":4,"h":false,"d":"Jan 8"}],"UCLA":[{"gf":2,"ga":4,"h":true,"d":"Sep 11"},{"gf":1,"ga":5,"h":false,"d":"Feb 16"}],"UNC":[{"gf":2,"ga":0,"h":false,"d":"Sep 18"},{"gf":2,"ga":0,"h":true,"d":"Jan 15"}],"OU":[{"gf":3,"ga":1,"h":false,"d":"Oct 20"},{"gf":0,"ga":2,"h":true,"d":"Feb 26"}],"TTU":[{"gf":3,"ga":3,"h":true,"d":"Oct 23"},{"gf":3,"ga":1,"h":false,"d":"Feb 12"}],"TEX":[{"gf":4,"ga":1,"h":true,"d":"Oct 30"},{"gf":3,"ga":2,"h":false,"d":"Mar 5"}],"MICH":[{"gf":2,"ga":5,"h":false,"d":"Nov 3"},{"gf":3,"ga":4,"h":true,"d":"Mar 16"}],"MIA":[{"gf":2,"ga":1,"h":false,"d":"Nov 20"},{"gf":0,"ga":1,"h":true,"d":"Mar 19"}],"ND":[{"gf":1,"ga":1,"h":true,"d":"Dec 4"},{"gf":4,"ga":0,"h":false,"d":"Apr 16"}],"UW":[{"gf":3,"ga":0,"h":false,"d":"Dec 18"},{"gf":1,"ga":1,"h":true,"d":"Apr 9"}],"USC":[{"gf":1,"ga":5,"h":false,"d":"Dec 25"}],"LSU":[{"gf":2,"ga":1,"h":true,"d":"Dec 29"},{"gf":2,"ga":2,"h":false,"d":"Apr 30"}]},"UF":{"BAMA":[{"gf":4,"ga":1,"h":false,"d":"Aug 25"},{"gf":1,"ga":0,"h":true,"d":"Feb 5"}],"OU":[{"gf":1,"ga":6,"h":false,"d":"Aug 14"},{"gf":2,"ga":3,"h":true,"d":"Jan 1"}],"TEX":[{"gf":3,"ga":2,"h":true,"d":"Aug 21"},{"gf":0,"ga":2,"h":false,"d":"Dec 8"}],"MICH":[{"gf":3,"ga":4,"h":false,"d":"Aug 28"},{"gf":2,"ga":2,"h":true,"d":"Jan 8"}],"MIA":[{"gf":0,"ga":3,"h":false,"d":"Sep 11"},{"gf":3,"ga":2,"h":true,"d":"Nov 10"}],"UW":[{"gf":2,"ga":5,"h":false,"d":"Feb 19"},{"gf":2,"ga":1,"h":true,"d":"Oct 2"}],"LSU":[{"gf":1,"ga":0,"h":true,"d":"Mar 5"},{"gf":2,"ga":3,"h":false,"d":"Oct 30"}],"UGA":[{"gf":3,"ga":2,"h":true,"d":"Mar 12"},{"gf":2,"ga":2,"h":false,"d":"Nov 6"}],"USC":[{"gf":2,"ga":2,"h":false,"d":"Mar 16"},{"gf":2,"ga":3,"h":true,"d":"Nov 3"}],"FSU":[{"gf":6,"ga":0,"h":false,"d":"Mar 19"}],"OSU":[{"gf":4,"ga":1,"h":true,"d":"Apr 2"},{"gf":1,"ga":2,"h":false,"d":"Nov 27"}],"UCLA":[{"gf":1,"ga":3,"h":true,"d":"Apr 9"},{"gf":2,"ga":2,"h":false,"d":"Dec 18"}],"UNC":[{"gf":3,"ga":4,"h":false,"d":"Apr 16"},{"gf":1,"ga":3,"h":true,"d":"Dec 4"}],"ND":[{"gf":1,"ga":3,"h":true,"d":"Dec 22"}]},"FSU":{"BAMA":[{"gf":0,"ga":0,"h":true,"d":"Aug 21"},{"gf":1,"ga":4,"h":false,"d":"Nov 13"}],"UF":[{"gf":0,"ga":6,"h":true,"d":"Mar 19"}],"UW":[{"gf":2,"ga":3,"h":false,"d":"Aug 28"},{"gf":2,"ga":4,"h":true,"d":"Jan 8"}],"USC":[{"gf":1,"ga":6,"h":false,"d":"Sep 4"},{"gf":0,"ga":8,"h":true,"d":"Feb 5"}],"LSU":[{"gf":4,"ga":1,"h":true,"d":"Sep 25"},{"gf":2,"ga":3,"h":false,"d":"Jan 22"}],"ND":[{"gf":4,"ga":2,"h":true,"d":"Feb 12"},{"gf":1,"ga":1,"h":false,"d":"Oct 23"}],"UGA":[{"gf":1,"ga":4,"h":false,"d":"Feb 19"},{"gf":1,"ga":4,"h":true,"d":"Oct 2"}],"OSU":[{"gf":1,"ga":2,"h":true,"d":"Feb 26"},{"gf":1,"ga":1,"h":false,"d":"Oct 20"}],"UNC":[{"gf":2,"ga":2,"h":false,"d":"Mar 5"},{"gf":2,"ga":5,"h":true,"d":"Oct 30"}],"UCLA":[{"gf":1,"ga":2,"h":true,"d":"Mar 16"},{"gf":1,"ga":2,"h":false,"d":"Nov 3"}],"OU":[{"gf":2,"ga":4,"h":false,"d":"Apr 9"}],"TTU":[{"gf":0,"ga":0,"h":true,"d":"Apr 16"}],"TEX":[{"gf":5,"ga":1,"h":true,"d":"Apr 23"},{"gf":2,"ga":2,"h":false,"d":"Dec 12"}],"MIA":[{"gf":3,"ga":2,"h":true,"d":"Dec 25"}],"MICH":[{"gf":2,"ga":3,"h":true,"d":"Dec 22"}]},"UGA":{"BAMA":[{"gf":1,"ga":3,"h":false,"d":"Aug 14"},{"gf":6,"ga":1,"h":true,"d":"Jan 1"}],"UF":[{"gf":2,"ga":3,"h":false,"d":"Mar 12"},{"gf":2,"ga":2,"h":true,"d":"Nov 6"}],"FSU":[{"gf":4,"ga":1,"h":true,"d":"Feb 19"},{"gf":4,"ga":1,"h":false,"d":"Oct 2"}],"UW":[{"gf":4,"ga":1,"h":true,"d":"Aug 21"},{"gf":2,"ga":3,"h":false,"d":"Nov 13"}],"ND":[{"gf":3,"ga":3,"h":false,"d":"Sep 4"},{"gf":1,"ga":2,"h":true,"d":"Feb 5"}],"LSU":[{"gf":2,"ga":5,"h":false,"d":"Sep 11"},{"gf":2,"ga":2,"h":true,"d":"Oct 9"}],"USC":[{"gf":5,"ga":2,"h":true,"d":"Sep 25"},{"gf":4,"ga":3,"h":false,"d":"Jan 22"}],"OSU":[{"gf":4,"ga":1,"h":true,"d":"Oct 23"},{"gf":3,"ga":2,"h":false,"d":"Feb 12"}],"UCLA":[{"gf":3,"ga":5,"h":true,"d":"Oct 30"},{"gf":0,"ga":1,"h":false,"d":"Mar 5"}],"UNC":[{"gf":3,"ga":1,"h":false,"d":"Nov 10"},{"gf":1,"ga":2,"h":true,"d":"Feb 26"}],"TTU":[{"gf":4,"ga":0,"h":true,"d":"Nov 27"},{"gf":3,"ga":2,"h":false,"d":"Apr 2"}],"OU":[{"gf":3,"ga":1,"h":false,"d":"Dec 4"},{"gf":1,"ga":0,"h":true,"d":"Apr 16"}],"MICH":[{"gf":2,"ga":1,"h":false,"d":"Dec 11"},{"gf":4,"ga":1,"h":true,"d":"Apr 23"}],"TEX":[{"gf":7,"ga":1,"h":true,"d":"Dec 18"},{"gf":2,"ga":4,"h":false,"d":"Apr 9"}],"MIA":[{"gf":1,"ga":2,"h":false,"d":"Dec 29"},{"gf":2,"ga":3,"h":true,"d":"Apr 30"}]},"LSU":{"BAMA":[{"gf":1,"ga":2,"h":false,"d":"Dec 29"},{"gf":2,"ga":2,"h":true,"d":"Apr 30"}],"UF":[{"gf":0,"ga":1,"h":false,"d":"Mar 5"},{"gf":3,"ga":2,"h":true,"d":"Oct 30"}],"FSU":[{"gf":1,"ga":4,"h":false,"d":"Sep 25"},{"gf":3,"ga":2,"h":true,"d":"Jan 22"}],"UGA":[{"gf":5,"ga":2,"h":true,"d":"Sep 11"},{"gf":2,"ga":2,"h":false,"d":"Oct 9"}],"ND":[{"gf":0,"ga":1,"h":false,"d":"Aug 28"},{"gf":5,"ga":1,"h":true,"d":"Jan 8"}],"OSU":[{"gf":3,"ga":0,"h":true,"d":"Sep 4"},{"gf":0,"ga":4,"h":false,"d":"Feb 5"}],"USC":[{"gf":3,"ga":4,"h":false,"d":"Sep 18"},{"gf":1,"ga":0,"h":true,"d":"Jan 15"}],"UNC":[{"gf":4,"ga":0,"h":false,"d":"Oct 2"},{"gf":3,"ga":2,"h":true,"d":"Feb 19"}],"UCLA":[{"gf":2,"ga":2,"h":true,"d":"Oct 23"},{"gf":0,"ga":3,"h":false,"d":"Feb 12"}],"TTU":[{"gf":5,"ga":2,"h":true,"d":"Nov 6"},{"gf":3,"ga":2,"h":false,"d":"Mar 12"}],"OU":[{"gf":1,"ga":2,"h":false,"d":"Nov 20"},{"gf":1,"ga":4,"h":true,"d":"Mar 19"}],"TEX":[{"gf":4,"ga":2,"h":true,"d":"Nov 27"},{"gf":5,"ga":3,"h":false,"d":"Apr 2"}],"MICH":[{"gf":3,"ga":2,"h":false,"d":"Dec 4"},{"gf":2,"ga":2,"h":true,"d":"Apr 16"}],"MIA":[{"gf":2,"ga":1,"h":false,"d":"Dec 12"},{"gf":1,"ga":3,"h":true,"d":"Apr 23"}],"UW":[{"gf":0,"ga":2,"h":true,"d":"Dec 25"}]},"MIA":{"BAMA":[{"gf":1,"ga":2,"h":true,"d":"Nov 20"},{"gf":1,"ga":0,"h":false,"d":"Mar 19"}],"UF":[{"gf":3,"ga":0,"h":true,"d":"Sep 11"},{"gf":2,"ga":3,"h":false,"d":"Nov 10"}],"UGA":[{"gf":2,"ga":1,"h":true,"d":"Dec 29"},{"gf":3,"ga":2,"h":false,"d":"Apr 30"}],"LSU":[{"gf":1,"ga":2,"h":true,"d":"Dec 12"},{"gf":3,"ga":1,"h":false,"d":"Apr 23"}],"OSU":[{"gf":1,"ga":4,"h":true,"d":"Aug 14"},{"gf":5,"ga":2,"h":false,"d":"Jan 1"}],"TTU":[{"gf":3,"ga":2,"h":true,"d":"Aug 18"},{"gf":4,"ga":4,"h":false,"d":"Feb 5"}],"UNC":[{"gf":1,"ga":2,"h":false,"d":"Aug 21"},{"gf":1,"ga":2,"h":true,"d":"Nov 14"}],"UCLA":[{"gf":1,"ga":2,"h":true,"d":"Aug 28"},{"gf":4,"ga":1,"h":false,"d":"Jan 8"}],"OU":[{"gf":2,"ga":1,"h":false,"d":"Oct 2"},{"gf":4,"ga":2,"h":true,"d":"Feb 19"}],"TEX":[{"gf":2,"ga":1,"h":true,"d":"Oct 23"},{"gf":3,"ga":1,"h":false,"d":"Feb 13"}],"ND":[{"gf":2,"ga":2,"h":true,"d":"Nov 3"},{"gf":1,"ga":2,"h":false,"d":"Mar 16"}],"MICH":[{"gf":1,"ga":1,"h":false,"d":"Nov 17"},{"gf":1,"ga":4,"h":true,"d":"Feb 26"}],"UW":[{"gf":2,"ga":0,"h":false,"d":"Nov 27"},{"gf":5,"ga":1,"h":true,"d":"Apr 2"}],"USC":[{"gf":2,"ga":2,"h":false,"d":"Dec 22"}],"FSU":[{"gf":2,"ga":3,"h":false,"d":"Dec 25"}]},"MICH":{"BAMA":[{"gf":5,"ga":2,"h":true,"d":"Nov 3"},{"gf":4,"ga":3,"h":false,"d":"Mar 16"}],"UF":[{"gf":4,"ga":3,"h":true,"d":"Aug 28"},{"gf":2,"ga":2,"h":false,"d":"Jan 8"}],"UGA":[{"gf":1,"ga":2,"h":true,"d":"Dec 11"},{"gf":1,"ga":4,"h":false,"d":"Apr 23"}],"LSU":[{"gf":2,"ga":3,"h":true,"d":"Dec 4"},{"gf":2,"ga":2,"h":false,"d":"Apr 16"}],"MIA":[{"gf":1,"ga":1,"h":true,"d":"Nov 17"},{"gf":4,"ga":1,"h":false,"d":"Feb 26"}],"UCLA":[{"gf":2,"ga":2,"h":true,"d":"Aug 14"},{"gf":4,"ga":1,"h":false,"d":"Jan 1"}],"OU":[{"gf":4,"ga":0,"h":false,"d":"Aug 25"},{"gf":1,"ga":1,"h":true,"d":"Jan 22"}],"TEX":[{"gf":0,"ga":2,"h":true,"d":"Sep 4"},{"gf":2,"ga":2,"h":false,"d":"Feb 5"}],"TTU":[{"gf":1,"ga":0,"h":true,"d":"Sep 11"},{"gf":0,"ga":2,"h":false,"d":"Oct 9"}],"ND":[{"gf":2,"ga":3,"h":true,"d":"Oct 2"},{"gf":0,"ga":0,"h":false,"d":"Feb 19"}],"UW":[{"gf":1,"ga":1,"h":false,"d":"Nov 6"},{"gf":2,"ga":0,"h":true,"d":"Mar 12"}],"USC":[{"gf":2,"ga":2,"h":false,"d":"Dec 18"},{"gf":1,"ga":2,"h":true,"d":"Apr 9"}],"FSU":[{"gf":3,"ga":2,"h":false,"d":"Dec 22"}],"UNC":[{"gf":0,"ga":2,"h":false,"d":"Dec 25"}],"OSU":[{"gf":3,"ga":2,"h":true,"d":"Dec 29"},{"gf":1,"ga":4,"h":false,"d":"Apr 30"}]},"UNC":{"BAMA":[{"gf":0,"ga":2,"h":true,"d":"Sep 18"},{"gf":0,"ga":2,"h":false,"d":"Jan 15"}],"UF":[{"gf":4,"ga":3,"h":true,"d":"Apr 16"},{"gf":3,"ga":1,"h":false,"d":"Dec 4"}],"FSU":[{"gf":2,"ga":2,"h":true,"d":"Mar 5"},{"gf":5,"ga":2,"h":false,"d":"Oct 30"}],"UGA":[{"gf":1,"ga":3,"h":true,"d":"Nov 10"},{"gf":2,"ga":1,"h":false,"d":"Feb 26"}],"LSU":[{"gf":0,"ga":4,"h":true,"d":"Oct 2"},{"gf":2,"ga":3,"h":false,"d":"Feb 19"}],"MIA":[{"gf":2,"ga":1,"h":true,"d":"Aug 21"},{"gf":2,"ga":1,"h":false,"d":"Nov 14"}],"MICH":[{"gf":2,"ga":0,"h":true,"d":"Dec 25"}],"ND":[{"gf":3,"ga":3,"h":false,"d":"Nov 6"},{"gf":3,"ga":0,"h":true,"d":"Mar 12"}],"OSU":[{"gf":2,"ga":1,"h":true,"d":"Nov 3"},{"gf":2,"ga":2,"h":false,"d":"Mar 16"}],"TEX":[{"gf":3,"ga":0,"h":false,"d":"Dec 29"},{"gf":5,"ga":2,"h":true,"d":"Apr 30"}],"TTU":[{"gf":1,"ga":2,"h":true,"d":"Apr 23"},{"gf":2,"ga":3,"h":false,"d":"Dec 11"}],"UCLA":[{"gf":4,"ga":3,"h":false,"d":"Nov 20"},{"gf":3,"ga":1,"h":true,"d":"Mar 19"}],"UW":[{"gf":2,"ga":1,"h":false,"d":"Sep 11"},{"gf":2,"ga":2,"h":true,"d":"Oct 9"}],"USC":[{"gf":2,"ga":6,"h":false,"d":"Oct 23"},{"gf":2,"ga":0,"h":true,"d":"Feb 12"}],"OU":[{"gf":5,"ga":1,"h":true,"d":"Dec 22"}]},"ND":{"BAMA":[{"gf":1,"ga":1,"h":false,"d":"Dec 4"},{"gf":0,"ga":4,"h":true,"d":"Apr 16"}],"FSU":[{"gf":2,"ga":4,"h":false,"d":"Feb 12"},{"gf":1,"ga":1,"h":true,"d":"Oct 23"}],"UGA":[{"gf":3,"ga":3,"h":true,"d":"Sep 4"},{"gf":2,"ga":1,"h":false,"d":"Feb 5"}],"LSU":[{"gf":1,"ga":0,"h":true,"d":"Aug 28"},{"gf":1,"ga":5,"h":false,"d":"Jan 8"}],"MIA":[{"gf":2,"ga":2,"h":false,"d":"Nov 3"},{"gf":2,"ga":1,"h":true,"d":"Mar 16"}],"MICH":[{"gf":3,"ga":2,"h":false,"d":"Oct 2"},{"gf":0,"ga":0,"h":true,"d":"Feb 19"}],"TTU":[{"gf":1,"ga":4,"h":false,"d":"Aug 21"},{"gf":3,"ga":2,"h":true,"d":"Dec 1"}],"USC":[{"gf":0,"ga":0,"h":true,"d":"Sep 11"},{"gf":2,"ga":4,"h":false,"d":"Nov 24"}],"OU":[{"gf":3,"ga":2,"h":false,"d":"Sep 18"},{"gf":5,"ga":1,"h":true,"d":"Jan 15"}],"TEX":[{"gf":1,"ga":3,"h":false,"d":"Sep 25"},{"gf":2,"ga":3,"h":true,"d":"Jan 22"}],"OSU":[{"gf":4,"ga":1,"h":true,"d":"Oct 30"},{"gf":2,"ga":3,"h":false,"d":"Mar 5"}],"UNC":[{"gf":3,"ga":3,"h":true,"d":"Nov 6"},{"gf":0,"ga":3,"h":false,"d":"Mar 12"}],"UCLA":[{"gf":2,"ga":8,"h":true,"d":"Nov 27"},{"gf":0,"ga":2,"h":false,"d":"Apr 2"}],"UW":[{"gf":3,"ga":2,"h":true,"d":"Dec 11"},{"gf":1,"ga":4,"h":false,"d":"Apr 23"}],"UF":[{"gf":3,"ga":1,"h":false,"d":"Dec 22"}]},"OSU":{"BAMA":[{"gf":0,"ga":1,"h":false,"d":"Aug 28"},{"gf":4,"ga":3,"h":true,"d":"Jan 8"}],"UF":[{"gf":1,"ga":4,"h":false,"d":"Apr 2"},{"gf":2,"ga":1,"h":true,"d":"Nov 27"}],"FSU":[{"gf":2,"ga":1,"h":false,"d":"Feb 26"},{"gf":1,"ga":1,"h":true,"d":"Oct 20"}],"UGA":[{"gf":1,"ga":4,"h":false,"d":"Oct 23"},{"gf":2,"ga":3,"h":true,"d":"Feb 12"}],"LSU":[{"gf":0,"ga":3,"h":false,"d":"Sep 4"},{"gf":4,"ga":0,"h":true,"d":"Feb 5"}],"MIA":[{"gf":4,"ga":1,"h":false,"d":"Aug 14"},{"gf":2,"ga":5,"h":true,"d":"Jan 1"}],"MICH":[{"gf":2,"ga":3,"h":false,"d":"Dec 29"},{"gf":4,"ga":1,"h":true,"d":"Apr 30"}],"ND":[{"gf":1,"ga":4,"h":false,"d":"Oct 30"},{"gf":3,"ga":2,"h":true,"d":"Mar 5"}],"USC":[{"gf":3,"ga":2,"h":true,"d":"Aug 18"},{"gf":5,"ga":0,"h":false,"d":"Feb 19"}],"UW":[{"gf":2,"ga":2,"h":true,"d":"Sep 18"},{"gf":1,"ga":2,"h":false,"d":"Jan 15"}],"UNC":[{"gf":1,"ga":2,"h":false,"d":"Nov 3"},{"gf":2,"ga":2,"h":true,"d":"Mar 16"}],"UCLA":[{"gf":1,"ga":3,"h":true,"d":"Nov 6"},{"gf":0,"ga":4,"h":false,"d":"Mar 12"}],"OU":[{"gf":4,"ga":3,"h":false,"d":"Dec 11"},{"gf":2,"ga":0,"h":true,"d":"Apr 23"}],"TTU":[{"gf":3,"ga":0,"h":true,"d":"Dec 18"},{"gf":1,"ga":4,"h":false,"d":"Apr 9"}],"TEX":[{"gf":1,"ga":3,"h":true,"d":"Dec 22"}]},"OU":{"BAMA":[{"gf":1,"ga":3,"h":true,"d":"Oct 20"},{"gf":2,"ga":0,"h":false,"d":"Feb 26"}],"UF":[{"gf":6,"ga":1,"h":true,"d":"Aug 14"},{"gf":3,"ga":2,"h":false,"d":"Jan 1"}],"FSU":[{"gf":4,"ga":2,"h":true,"d":"Apr 9"}],"UGA":[{"gf":1,"ga":3,"h":true,"d":"Dec 4"},{"gf":0,"ga":1,"h":false,"d":"Apr 16"}],"LSU":[{"gf":2,"ga":1,"h":true,"d":"Nov 20"},{"gf":4,"ga":1,"h":false,"d":"Mar 19"}],"MIA":[{"gf":1,"ga":2,"h":true,"d":"Oct 2"},{"gf":2,"ga":4,"h":false,"d":"Feb 19"}],"MICH":[{"gf":0,"ga":4,"h":true,"d":"Aug 25"},{"gf":1,"ga":1,"h":false,"d":"Jan 22"}],"ND":[{"gf":2,"ga":3,"h":true,"d":"Sep 18"},{"gf":1,"ga":5,"h":false,"d":"Jan 15"}],"OSU":[{"gf":3,"ga":4,"h":true,"d":"Dec 11"},{"gf":0,"ga":2,"h":false,"d":"Apr 23"}],"TTU":[{"gf":1,"ga":4,"h":true,"d":"Aug 28"}],"TEX":[{"gf":2,"ga":4,"h":false,"d":"Sep 11"},{"gf":1,"ga":3,"h":true,"d":"Nov 24"}],"UW":[{"gf":3,"ga":3,"h":true,"d":"Mar 5"},{"gf":3,"ga":2,"h":false,"d":"Oct 30"}],"USC":[{"gf":3,"ga":3,"h":true,"d":"Apr 2"},{"gf":6,"ga":2,"h":false,"d":"Nov 27"}],"UCLA":[{"gf":2,"ga":0,"h":false,"d":"Apr 30"},{"gf":2,"ga":4,"h":true,"d":"Dec 29"}],"UNC":[{"gf":1,"ga":5,"h":false,"d":"Dec 22"}]},"TEX":{"BAMA":[{"gf":1,"ga":4,"h":false,"d":"Oct 30"},{"gf":2,"ga":3,"h":true,"d":"Mar 5"}],"UF":[{"gf":2,"ga":3,"h":false,"d":"Aug 21"},{"gf":2,"ga":0,"h":true,"d":"Dec 8"}],"FSU":[{"gf":1,"ga":5,"h":false,"d":"Apr 23"},{"gf":2,"ga":2,"h":true,"d":"Dec 12"}],"UGA":[{"gf":1,"ga":7,"h":false,"d":"Dec 18"},{"gf":4,"ga":2,"h":true,"d":"Apr 9"}],"LSU":[{"gf":2,"ga":4,"h":false,"d":"Nov 27"},{"gf":3,"ga":5,"h":true,"d":"Apr 2"}],"MIA":[{"gf":1,"ga":2,"h":false,"d":"Oct 23"},{"gf":1,"ga":3,"h":true,"d":"Feb 13"}],"MICH":[{"gf":2,"ga":0,"h":false,"d":"Sep 4"},{"gf":2,"ga":2,"h":true,"d":"Feb 5"}],"ND":[{"gf":3,"ga":1,"h":true,"d":"Sep 25"},{"gf":3,"ga":2,"h":false,"d":"Jan 22"}],"OSU":[{"gf":3,"ga":1,"h":false,"d":"Dec 22"}],"OU":[{"gf":4,"ga":2,"h":true,"d":"Sep 11"},{"gf":3,"ga":1,"h":false,"d":"Nov 24"}],"TTU":[{"gf":3,"ga":3,"h":false,"d":"Sep 18"},{"gf":3,"ga":0,"h":true,"d":"Jan 15"}],"UW":[{"gf":3,"ga":3,"h":true,"d":"Nov 3"},{"gf":2,"ga":1,"h":false,"d":"Mar 16"}],"USC":[{"gf":1,"ga":1,"h":true,"d":"Dec 5"},{"gf":2,"ga":3,"h":false,"d":"Apr 16"}],"UCLA":[{"gf":1,"ga":5,"h":false,"d":"Dec 25"}],"UNC":[{"gf":0,"ga":3,"h":true,"d":"Dec 29"},{"gf":2,"ga":5,"h":false,"d":"Apr 30"}]},"TTU":{"BAMA":[{"gf":3,"ga":3,"h":false,"d":"Oct 23"},{"gf":1,"ga":3,"h":true,"d":"Feb 12"}],"FSU":[{"gf":0,"ga":0,"h":false,"d":"Apr 16"}],"UGA":[{"gf":0,"ga":4,"h":false,"d":"Nov 27"},{"gf":2,"ga":3,"h":true,"d":"Apr 2"}],"LSU":[{"gf":2,"ga":5,"h":false,"d":"Nov 6"},{"gf":2,"ga":3,"h":true,"d":"Mar 12"}],"MIA":[{"gf":2,"ga":3,"h":false,"d":"Aug 18"},{"gf":4,"ga":4,"h":true,"d":"Feb 5"}],"MICH":[{"gf":0,"ga":1,"h":false,"d":"Sep 11"},{"gf":2,"ga":0,"h":true,"d":"Oct 9"}],"ND":[{"gf":4,"ga":1,"h":true,"d":"Aug 21"},{"gf":2,"ga":3,"h":false,"d":"Dec 1"}],"OSU":[{"gf":0,"ga":3,"h":false,"d":"Dec 18"},{"gf":4,"ga":1,"h":true,"d":"Apr 9"}],"OU":[{"gf":4,"ga":1,"h":false,"d":"Aug 28"}],"TEX":[{"gf":3,"ga":3,"h":true,"d":"Sep 18"},{"gf":0,"ga":3,"h":false,"d":"Jan 15"}],"UW":[{"gf":5,"ga":0,"h":false,"d":"Feb 26"},{"gf":2,"ga":2,"h":true,"d":"Oct 20"}],"USC":[{"gf":1,"ga":5,"h":false,"d":"Mar 19"},{"gf":1,"ga":3,"h":true,"d":"Nov 20"}],"UNC":[{"gf":2,"ga":1,"h":false,"d":"Apr 23"},{"gf":3,"ga":2,"h":true,"d":"Dec 11"}],"UCLA":[{"gf":1,"ga":3,"h":false,"d":"Dec 22"}]},"UCLA":{"BAMA":[{"gf":4,"ga":2,"h":false,"d":"Sep 11"},{"gf":5,"ga":1,"h":true,"d":"Feb 16"}],"UF":[{"gf":3,"ga":1,"h":false,"d":"Apr 9"},{"gf":2,"ga":2,"h":true,"d":"Dec 18"}],"FSU":[{"gf":2,"ga":1,"h":false,"d":"Mar 16"},{"gf":2,"ga":1,"h":true,"d":"Nov 3"}],"UGA":[{"gf":5,"ga":3,"h":false,"d":"Oct 30"},{"gf":1,"ga":0,"h":true,"d":"Mar 5"}],"LSU":[{"gf":2,"ga":2,"h":false,"d":"Oct 23"},{"gf":3,"ga":0,"h":true,"d":"Feb 12"}],"MIA":[{"gf":2,"ga":1,"h":false,"d":"Aug 28"},{"gf":1,"ga":4,"h":true,"d":"Jan 8"}],"MICH":[{"gf":2,"ga":2,"h":false,"d":"Aug 14"},{"gf":1,"ga":4,"h":true,"d":"Jan 1"}],"ND":[{"gf":8,"ga":2,"h":false,"d":"Nov 27"},{"gf":2,"ga":0,"h":true,"d":"Apr 2"}],"OSU":[{"gf":3,"ga":1,"h":false,"d":"Nov 6"},{"gf":4,"ga":0,"h":true,"d":"Mar 12"}],"OU":[{"gf":0,"ga":2,"h":true,"d":"Apr 30"},{"gf":4,"ga":2,"h":false,"d":"Dec 29"}],"TEX":[{"gf":5,"ga":1,"h":true,"d":"Dec 25"}],"UW":[{"gf":4,"ga":1,"h":true,"d":"Aug 25"},{"gf":1,"ga":0,"h":false,"d":"Jan 22"}],"UNC":[{"gf":3,"ga":4,"h":true,"d":"Nov 20"},{"gf":1,"ga":3,"h":false,"d":"Mar 19"}],"USC":[{"gf":2,"ga":0,"h":true,"d":"Dec 8"},{"gf":6,"ga":1,"h":false,"d":"Feb 26"}],"TTU":[{"gf":3,"ga":1,"h":true,"d":"Dec 22"}]},"USC":{"BAMA":[{"gf":5,"ga":1,"h":true,"d":"Dec 25"}],"UF":[{"gf":2,"ga":2,"h":true,"d":"Mar 16"},{"gf":3,"ga":2,"h":false,"d":"Nov 3"}],"FSU":[{"gf":6,"ga":1,"h":true,"d":"Sep 4"},{"gf":8,"ga":0,"h":false,"d":"Feb 5"}],"UGA":[{"gf":2,"ga":5,"h":false,"d":"Sep 25"},{"gf":3,"ga":4,"h":true,"d":"Jan 22"}],"LSU":[{"gf":4,"ga":3,"h":true,"d":"Sep 18"},{"gf":0,"ga":1,"h":false,"d":"Jan 15"}],"MIA":[{"gf":2,"ga":2,"h":true,"d":"Dec 22"}],"MICH":[{"gf":2,"ga":2,"h":true,"d":"Dec 18"},{"gf":2,"ga":1,"h":false,"d":"Apr 9"}],"ND":[{"gf":0,"ga":0,"h":false,"d":"Sep 11"},{"gf":4,"ga":2,"h":true,"d":"Nov 24"}],"OSU":[{"gf":2,"ga":3,"h":false,"d":"Aug 18"},{"gf":0,"ga":5,"h":true,"d":"Feb 19"}],"OU":[{"gf":3,"ga":3,"h":false,"d":"Apr 2"},{"gf":2,"ga":6,"h":true,"d":"Nov 27"}],"TEX":[{"gf":1,"ga":1,"h":false,"d":"Dec 5"},{"gf":3,"ga":2,"h":true,"d":"Apr 16"}],"TTU":[{"gf":5,"ga":1,"h":true,"d":"Mar 19"},{"gf":3,"ga":1,"h":false,"d":"Nov 20"}],"UCLA":[{"gf":0,"ga":2,"h":false,"d":"Dec 8"},{"gf":1,"ga":6,"h":true,"d":"Feb 26"}],"UNC":[{"gf":6,"ga":2,"h":true,"d":"Oct 23"},{"gf":0,"ga":2,"h":false,"d":"Feb 12"}],"UW":[{"gf":2,"ga":3,"h":false,"d":"Aug 14"},{"gf":1,"ga":4,"h":true,"d":"Jan 1"}]},"UW":{"BAMA":[{"gf":0,"ga":3,"h":true,"d":"Dec 18"},{"gf":1,"ga":1,"h":false,"d":"Apr 9"}],"UF":[{"gf":5,"ga":2,"h":true,"d":"Feb 19"},{"gf":1,"ga":2,"h":false,"d":"Oct 2"}],"FSU":[{"gf":3,"ga":2,"h":true,"d":"Aug 28"},{"gf":4,"ga":2,"h":false,"d":"Jan 8"}],"UGA":[{"gf":1,"ga":4,"h":false,"d":"Aug 21"},{"gf":3,"ga":2,"h":true,"d":"Nov 13"}],"LSU":[{"gf":2,"ga":0,"h":false,"d":"Dec 25"}],"MIA":[{"gf":0,"ga":2,"h":true,"d":"Nov 27"},{"gf":1,"ga":5,"h":false,"d":"Apr 2"}],"MICH":[{"gf":1,"ga":1,"h":true,"d":"Nov 6"},{"gf":0,"ga":2,"h":false,"d":"Mar 12"}],"ND":[{"gf":2,"ga":3,"h":false,"d":"Dec 11"},{"gf":4,"ga":1,"h":true,"d":"Apr 23"}],"OSU":[{"gf":2,"ga":2,"h":false,"d":"Sep 18"},{"gf":2,"ga":1,"h":true,"d":"Jan 15"}],"OU":[{"gf":3,"ga":3,"h":false,"d":"Mar 5"},{"gf":2,"ga":3,"h":true,"d":"Oct 30"}],"TEX":[{"gf":3,"ga":3,"h":false,"d":"Nov 3"},{"gf":1,"ga":2,"h":true,"d":"Mar 16"}],"TTU":[{"gf":0,"ga":5,"h":true,"d":"Feb 26"},{"gf":2,"ga":2,"h":false,"d":"Oct 20"}],"UCLA":[{"gf":1,"ga":4,"h":false,"d":"Aug 25"},{"gf":0,"ga":1,"h":true,"d":"Jan 22"}],"UNC":[{"gf":1,"ga":2,"h":true,"d":"Sep 11"},{"gf":2,"ga":2,"h":false,"d":"Oct 9"}],"USC":[{"gf":3,"ga":2,"h":true,"d":"Aug 14"},{"gf":4,"ga":1,"h":false,"d":"Jan 1"}]}}};
+
+const SIXTEEN = ["UCLA","UNC","MIA","UGA","LSU","BAMA","MICH","USC","OSU","TEX","ND","UF","UW","TTU","OU","FSU"];
+const NAME = {UCLA:"UCLA",UNC:"North Carolina",MIA:"Miami",UGA:"Georgia",LSU:"LSU",BAMA:"Alabama",MICH:"Michigan",USC:"USC",OSU:"Ohio State",TEX:"Texas",ND:"Notre Dame",UF:"Florida",UW:"Washington",TTU:"Texas Tech",OU:"Oklahoma",FSU:"Florida State",TCU:"TCU",CLEM:"Clemson",ORE:"Oregon",DUKE:"Duke",TENN:"Tennessee",MSU:"Michigan State"};
+const COLORS = Object.fromEntries(DATA.table.map(r => [r.ab, r.c]));
+const chip = ab => `<span class="chip" aria-hidden="true"><i style="background:${COLORS[ab][0]}"></i><i style="background:${COLORS[ab][1]}"></i></span>`;
+
+/* standings */
+(function(){
+  const tb = document.querySelector('#standings tbody');
+  tb.innerHTML = DATA.table.map(r => {
+    const cls = [r.pos <= 5 ? 'q' : '', r.pos >= 21 ? 'rel' : '', SIXTEEN.includes(r.ab) ? '' : 'ai', r.pos === 16 ? 'cut' : ''].join(' ');
+    const badge = r.pos === 1 ? '<span class="badge c" title="Champions">C</span>' : (r.pos === 22 ? '<span class="badge r" title="Relegated">R</span>' : '');
+    const form = r.form ? `<span class="form" aria-label="Last five: ${r.form.split('').join(' ')}">${r.form.split('').map(c=>`<i class="${c}"></i>`).join('')}</span>` : '';
+    const gd = (r.gd > 0 ? '+' : '') + r.gd;
+    return `<tr class="${cls}"><td class="pos">${r.pos}</td><td class="team">${chip(r.ab)}${NAME[r.ab]}${badge}</td><td>${gd}</td><td class="pts">${r.pts}</td><td>${form}</td></tr>`;
+  }).join('');
+})();
+
+/* ticker */
+(function(){
+  const items = [
+    ['Champions','<b>UCLA</b> win the USL Academy · 99 pts'],
+    ['Wed May 4 · FT','Cotton QF <b>Alabama 15–1</b> Utah State'],
+    ['Wed May 4 · FT','Rose QF <b>Michigan 3–1</b> Ohio State'],
+    ['Wed May 4 · FT','Rose QF Notre Dame 1–8 <b>UCLA</b>'],
+    ['Wed May 4 · FT','Fiesta QF <b>Miami 3–1</b> Texas'],
+    ['Wed May 4 · FT','Fiesta QF <b>UNC 6–2</b> Florida State'],
+    ['Sat May 7 · 15:00','Clemson v <b>Georgia</b>'],
+    ['Sat May 7 · 15:00','<b>Miami v USC</b> · race for the top five'],
+    ['Sat May 7 · 15:00','TCU v <b>LSU</b>'],
+    ['Sat May 7 · 15:00','Notre Dame v Florida'],
+    ['Sat May 7 · 18:00','<b>Michigan</b> v Florida State'],
+    ['Sat May 7 · 18:00','Oregon v <b>Duke</b> · relegation'],
+    ['Sat May 7 · 18:00','Texas v Ohio State'],
+    ['Sat May 7 · 20:00','Oklahoma v North Carolina'],
+    ['Sat May 7 · 20:00','Texas Tech v UCLA'],
+    ['Sun May 8 · 15:00','<b>Alabama v Tennessee</b> · top five v survival'],
+    ['Sun May 15 · 15:00','FIFA Youth League final · <b>UNC v Michigan</b>'],
+    ['Sat May 28','Final day · <b>Alabama v USC</b> · Michigan v UNC']
+  ];
+  const html = items.map(([k,v]) => `<span class="tick-item"><span class="k">${k}</span>${v}</span>`).join('');
+  document.getElementById('ticker').innerHTML = html + html;
+})();
+
+/* race ladder */
+(function(){
+  const lo = 72, hi = 90, pct = v => ((v - lo) / (hi - lo)) * 100;
+  const clubs = [
+    {ab:'MIA', pts:82, left:'<b>USC</b> (H) · FSU (H)'},
+    {ab:'UGA', pts:81, left:'Clemson (A) · TCU (A)'},
+    {ab:'LSU', pts:79, left:'TCU (A) · Washington (A)'},
+    {ab:'BAMA', pts:77, left:'Tennessee (H) · <b>USC</b> (H)'},
+    {ab:'MICH', pts:75, left:'FSU (H) · <b>UNC</b> (H)'},
+    {ab:'USC', pts:75, left:'<b>Miami</b> (A) · <b>Alabama</b> (A)'}
+  ];
+  document.getElementById('ladder').innerHTML = clubs.map(c => `
+    <div class="lrow">
+      <div class="who">${chip(c.ab)}${c.ab}</div>
+      <div class="track" role="img" aria-label="${NAME[c.ab]}: ${c.pts} points, maximum ${c.pts+6}">
+        <div class="max" style="width:${pct(c.pts+6)}%"></div>
+        <div class="now" style="width:${pct(c.pts)}%"></div>
+        <span class="lab">${c.pts}</span>
+      </div>
+      <div class="left">${c.left}</div>
+    </div>`).join('');
+  document.getElementById('ticks').innerHTML = [72,75,78,81,84,87,90].map(v => `<span style="left:${pct(v)}%">${v}</span>`).join('');
+})();
+
+/* fixtures */
+(function(){
+  const days = [
+    {h:'Saturday, May 7 · Matchday 41', rows:[
+      ['15:00','Miami v USC','Top 5','hot'],
+      ['15:00','Clemson v Georgia','Top 5'],
+      ['15:00','TCU v LSU','Top 5'],
+      ['15:00','Notre Dame v Florida',''],
+      ['18:00','Michigan v Florida State','Top 5'],
+      ['18:00','Oregon v Duke','Survival','rel'],
+      ['18:00','Texas v Ohio State',''],
+      ['18:00','Washington v Michigan State',''],
+      ['20:00','Oklahoma v North Carolina',''],
+      ['20:00','Texas Tech v UCLA','']
+    ]},
+    {h:'Sunday, May 8', rows:[['15:00','Alabama v Tennessee','Top 5 · Survival','hot']]},
+    {h:'Sunday, May 15 · FIFA Youth League', rows:[['15:00','North Carolina v Michigan','Final','hot big']]},
+    {h:'Saturday, May 28 · Final day', rows:[
+      ['15:00','Alabama v USC','Top 5','hot'],
+      ['15:00','Michigan v North Carolina','Top 5'],
+      ['15:00','Miami v Florida State','Top 5'],
+      ['15:00','TCU v Georgia','Top 5'],
+      ['15:00','Washington v LSU','Top 5'],
+      ['15:00','Michigan State v Tennessee','Survival','rel'],
+      ['15:00','Oklahoma v Duke','Survival','rel'],
+      ['15:00','Texas v UCLA',''],
+      ['15:00','Texas Tech v Florida',''],
+      ['15:00','Clemson v Ohio State',''],
+      ['15:00','Notre Dame v Oregon','']
+    ]}
+  ];
+  document.getElementById('fixtures').innerHTML = days.map(d => `
+    <div class="fx-day"><h4>${d.h}</h4><ul>${d.rows.map(([t,m,tag,cls='']) => {
+      const tc = cls.includes('rel') ? 'tag rel' : (cls.includes('big') ? 'tag big' : 'tag');
+      return `<li class="${cls.includes('hot')?'hot':''}"><span class="tm">${t}</span><span>${m}</span>${tag?`<span class="${tc}">${tag}</span>`:'<span></span>'}</li>`;
+    }).join('')}</ul></div>`).join('');
+})();
+
+/* the grid */
+(function(){
+  const pending = {'MIA|USC':'May 7','ND|UF':'May 7','FSU|MICH':'May 7','OSU|TEX':'May 7','OU|UNC':'May 7','TTU|UCLA':'May 7',
+                   'BAMA|USC':'May 28','FSU|MIA':'May 28','MICH|UNC':'May 28','TEX|UCLA':'May 28','TTU|UF':'May 28','LSU|UW':'May 28'};
+  const order = DATA.table.filter(r => SIXTEEN.includes(r.ab)).map(r => r.ab);
+  const pos = Object.fromEntries(DATA.table.map(r => [r.ab, r.pos]));
+  let h = '<thead><tr><th class="corner" scope="col">Row v column</th>' + order.map(ab => `<th scope="col" title="${NAME[ab]}">${ab}</th>`).join('') + '</tr></thead><tbody>';
+  for (const a of order){
+    h += `<tr><th class="rowh" scope="row"><span class="p">${pos[a]}</span>${chip(a)}${NAME[a]}</th>`;
+    for (const b of order){
+      if (a === b){ h += '<td class="self" aria-label="same club"></td>'; continue; }
+      const legs = (DATA.ct[a] && DATA.ct[a][b]) ? DATA.ct[a][b] : [];
+      const key = [a,b].sort().join('|');
+      const pend = pending[key] ? 1 : 0;
+      const missing = Math.max(0, 2 - legs.length - pend);
+      const pts = legs.reduce((s,x) => s + (x.gf > x.ga ? 3 : x.gf === x.ga ? 1 : 0), 0);
+      let cls = '';
+      if (legs.length === 2) cls = 's' + pts;
+      else if (legs.length === 1) cls = 's' + ({3:6,1:3,0:0}[pts]);
+      const title = legs.map(x => `${NAME[a]} ${x.gf}–${x.ga} ${NAME[b]} (${x.h?'home':'away'}, ${x.d})`).join('; ');
+      let inner = legs.map(x => `<span class="leg">${x.gf}–${x.ga}<em>${x.h?'H':'A'}</em></span>`).join('');
+      if (pend) inner += `<span class="pend">${pending[key]}</span>`;
+      if (missing) inner += '<span class="nc">n/c</span>'.repeat(missing);
+      h += `<td class="${cls}" title="${title}">${inner}</td>`;
+    }
+    h += '</tr>';
+  }
+  document.getElementById('xt').innerHTML = h + '</tbody>';
+})();
+
+</script>
+<style id="tl-bridge">.picker,#edition-pick,#arch-back{display:none!important}
+a.tl-x{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-decoration-thickness:1px;text-underline-offset:3px;cursor:pointer}
+a.tl-x:hover{text-decoration-color:#D0281C}</style>
+<script>(function(){
+function post(m){m.tl=1;try{parent.postMessage(m,'*')}catch(e){}}
+function off(id){var el=document.getElementById(id);return el?el.getBoundingClientRect().top+scrollY:null}
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a');if(!a)return;
+ var go=a.getAttribute('data-go');if(go){e.preventDefault();post({go:go});return}
+ var h=a.getAttribute('href')||'';if(h.charAt(0)==='#'&&h.length>1){var y=off(h.slice(1));if(y!=null){e.preventDefault();post({scroll:y,id:h.slice(1)})}}});
+var last=0;function size(){var h=Math.ceil(document.documentElement.scrollHeight);if(Math.abs(h-last)>2){last=h;post({h:h})}}
+if(window.ResizeObserver)new ResizeObserver(size).observe(document.documentElement);addEventListener('load',size);size();setTimeout(size,400);
+addEventListener('message',function(e){var d=e.data||{};if(!d.tlhost)return;
+ if('theme' in d){if(d.theme)document.documentElement.setAttribute('data-theme',d.theme);else document.documentElement.removeAttribute('data-theme')}
+ if(d.to){post({scroll:off(d.to)||0,id:d.to,quiet:1})}});
+post({ready:1});})();</script></body></html>
