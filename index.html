@@ -1697,7 +1697,7 @@ function openEdition(n, section, restoreY, prevKey) {
   /* a fresh frame per edition: changing an existing frame's src would add browser-history entries */
   const f = document.createElement('iframe');
   f.id = 'edframe'; f.title = 'Touchline edition No. ' + n; f.style.height = '80vh';
-  f.src = 'editions/' + String(n).padStart(2, '0') + '.html';
+  f.src = 'editions/' + String(n).padStart(2, '0') + '.html?v=2026-10-24-29';
   frame.replaceWith(f); frame = f;
   window.scrollTo(0, 0);
 }
@@ -1806,7 +1806,7 @@ function wireSearch() {
 
 /* ------------------------------------------------------------ boot */
 applyTheme();
-const get = f => fetch(f).then(r => { if (!r.ok) throw new Error(f + ' ' + r.status); return r.json(); });
+const get = f => fetch(f + '?v=2026-10-24-29', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(f + ' ' + r.status); return r.json(); });
 Promise.all([get('data/db.json'), get('data/ext.json'), get('data/editions.json')]).then(([db, ext, ed]) => {
   DB = db; window.DB = db; window.__EXT = ext; ED = ed;
   A = bootAlmanac(); C = DB.clubs; P = DB.players;
