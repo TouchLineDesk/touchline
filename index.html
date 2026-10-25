@@ -511,6 +511,25 @@ main>.wrap{max-width:1240px}
 .linkgrid a span{font-size:12px;color:var(--muted)}
 .linkgrid a:hover{border-color:var(--accent)}
 
+
+/* draft history */
+.dh-sub{display:block;font:12px var(--data);color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis}
+.dh-tag{font:800 12px var(--data);padding:1px 6px;border-radius:3px;white-space:nowrap}
+.dh-tag.up{color:var(--up);border:1px solid currentColor}.dh-tag.dn{color:var(--down);border:1px solid currentColor}
+.dh-no1{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.dh-card{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:12px}
+.dh-card:hover{border-color:var(--accent)}
+.dh-card img{border-radius:6px;display:block}
+.dh-card b{display:block;font:900 24px/1 var(--display);text-transform:uppercase;margin:2px 0 5px}
+.dh-card span:not(.eyebrow){display:block;font-size:13px;color:var(--muted)}
+.dh-card .eyebrow{margin:0}
+.dh-clubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dh-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.dh-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;font-size:13.5px}
+.dh-list li span{min-width:0;font-weight:600}
+.dh-list small{display:block;font:12px var(--data);color:var(--muted);font-weight:400}
+.dh-list b{font:800 15px var(--data);text-align:right}
+.dh-list b small{display:inline;margin-left:3px}
 /* archive */
 .ecards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
 .ecard{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;background:var(--surface);border:1px solid var(--rule);border-radius:5px;padding:13px 14px;align-items:start}
@@ -1461,7 +1480,7 @@ function parse() {
 /* bare-token deep links (the only kind a shared artifact link can carry): #p-UID, #c-MICH, #ed-28, #ed-28-power, #s-2023-24, #odds */
 const TOKEN_ROUTES = { touchline: '/touchline', almanac: '/almanac', about: '/about', players: '/almanac/players', clubs: '/almanac/clubs',
   seasons: '/almanac/seasons', leaders: '/almanac/leaders', odds: '/almanac/odds', trophies: '/almanac/trophies',
-  draft: '/almanac/draft', timeline: '/almanac/timeline', latest: '/touchline/latest' };
+  draft: '/almanac/draft', recruiting: '/almanac/draft', drafts: '/almanac/drafts', pros: '/almanac/drafts', timeline: '/almanac/timeline', latest: '/touchline/latest' };
 function fromToken(t) {
   let m;
   if ((m = t.match(/^p-(\d+)$/))) return '/almanac/players/' + m[1];
@@ -1499,7 +1518,7 @@ function subnav(items, on, label) {
 }
 const ALM_NAV = [['Overview', '#/almanac', ''], ['Players', '#/almanac/players', 'players'], ['Clubs', '#/almanac/clubs', 'clubs'],
   ['Leaders', '#/almanac/leaders', 'leaders'], ['Seasons', '#/almanac/seasons', 'seasons'], ['Odds', '#/almanac/odds', 'odds'],
-  ['Trophies', '#/almanac/trophies', 'trophies'], ['Draft &amp; recruiting', '#/almanac/draft', 'draft'], ['Timeline', '#/almanac/timeline', 'timeline']].map(x => [x[0].replace('&amp;', '&'), x[1], x[2], x[3]]);
+  ['Trophies', '#/almanac/trophies', 'trophies'], ['Draft history', '#/almanac/drafts', 'drafts'], ['Recruiting', '#/almanac/draft', 'draft'], ['Timeline', '#/almanac/timeline', 'timeline']].map(x => [x[0].replace('&amp;', '&'), x[1], x[2], x[3]]);
 
 function route() {
   if (!DB) return;
@@ -1563,7 +1582,7 @@ function almanac(b, c, q) {
     return { html: A.vSeason(c), title: DB.seasons[c].label || c, crumbs: base.concat([['Seasons', '/almanac/seasons'], [DB.seasons[c].label || c]]), sub: almSub('seasons') };
   }
   const simple = { leaders: ['Leaders', () => A.vLeaders(q)], odds: ['The Odds Desk', A.vOdds], trophies: ['Trophies', A.vTrophies],
-    draft: ['Draft & recruiting', () => A.vRecruits(q)], timeline: ['The Timeline', A.vTimeline] };
+    draft: ['Recruiting', () => A.vRecruits(q)], drafts: ['Draft history', () => vDrafts(q)], timeline: ['The Timeline', A.vTimeline] };
   if (simple[b] && !c) {
     const [t, fn] = simple[b];
     return { html: fn(), title: t, crumbs: base.concat([[t]]), sub: almSub(b),
@@ -1581,6 +1600,153 @@ function mentionBlock(list, who) {
   }).join('');
   return `<div class="sec"><div class="sh"><h2>In Touchline</h2><i></i><span class="more">${list.length} edition${list.length === 1 ? '' : 's'}</span></div>
     <div class="ments">${rows}</div><p class="note">Editions that name ${esc(who)} in full. Each link opens at the first section that does.</p></div>`;
+}
+
+/* ------------------------------------------------------------ draft history (#/almanac/drafts) */
+/* Every graduate keyed by UID. Career = last season's pro figures (pro22) plus this season's (pro).
+   Pro clubs are read from each player's current pro record; the draft record keeps the club that picked him. */
+function gradRows() {
+  return Object.keys(P).filter(u => P[u].draft).map(u => {
+    const p = P[u], d = p.draft, a = p.pro22 && p.pro22.apps ? p.pro22 : null, b = p.pro && p.pro.apps != null ? p.pro : null;
+    const parts = [a, b].filter(Boolean);
+    const apps = parts.reduce((s, x) => s + (x.apps || 0), 0);
+    const avr = apps ? parts.reduce((s, x) => s + (x.avr || 0) * (x.apps || 0), 0) / apps : null;
+    return { u, p, d, now: (b && b.club) || p.club || d.to, apps, gls: parts.reduce((s, x) => s + (x.gls || 0), 0),
+      ast: parts.reduce((s, x) => s + (x.ast || 0), 0), mins: parts.reduce((s, x) => s + (x.mins || 0), 0),
+      pom: parts.reduce((s, x) => s + (x.pom || 0), 0), avr, season: b || null };
+  });
+}
+const DH_NOTE = 'Career figures are senior pro games: 2022–23 plus 2023–24 so far, read from the save on ';
+function dhStat(v, d) { return v == null || v === 0 ? `<span class="dim">${d == null ? '0' : d}</span>` : v; }
+function dhRow(r, opts) {
+  const o = opts || {}, d = r.d, moved = r.now !== d.to, diff = d.pick - d.board;
+  const val = diff >= 10 ? `<span class="dh-tag up" title="We had him ${d.board}th">board ${d.board}</span>`
+    : diff <= -10 ? `<span class="dh-tag dn" title="We had him ${d.board}th">board ${d.board}</span>` : `<span class="dim">${d.board}</span>`;
+  return `<tr>
+    <td class="rk">${d.pick}</td>${o.year ? `<td class="dim">${d.year}</td>` : ''}
+    <td class="fc0">${A.mug(r.u, 'mugs')}</td>
+    <td class="nm">${A.plink(r.u)}</td>
+    <td class="cl">${C[d.frm] ? `<a href="#/almanac/clubs/${d.frm}">${A.crest(d.frm, 15)} ${esc(C[d.frm].short)}</a>` : esc(d.frm)}</td>
+    <td class="cl">${esc(d.to)}</td>
+    <td class="cl">${moved ? `<b>${esc(r.now)}</b>` : '<span class="dim">same</span>'}</td>
+    <td class="cl"><b>${esc(d.grade)}</b></td><td>${val}</td>
+    <td>${A.caChip(r.p.ca)}</td>
+    <td>${dhStat(r.apps)}</td><td>${dhStat(r.gls)}</td><td>${dhStat(r.ast)}</td>
+    <td class="dim">${r.avr ? r.avr.toFixed(2) : '&mdash;'}</td></tr>`;
+}
+const DH_HEAD = year => `<tr><th>Pick</th>${year ? '<th>Year</th>' : ''}<th></th><th class="l">Player</th><th class="l">From</th><th class="l">Drafted by</th>
+  <th class="l">Now at</th><th class="l">Grade</th><th>Board</th><th>CA</th><th>Apps</th><th>G</th><th>A</th><th>Rat</th></tr>`;
+
+function vDrafts(q) {
+  const R = gradRows(), years = [...new Set(R.map(r => r.d.year))].sort();
+  const view = q.get('v') || 'overview', y = Number(q.get('y')) || years[years.length - 1];
+  const asof = esc(DB.meta.asof);
+  const tabs = [['overview', 'Overview'], ['clubs', 'Pro clubs'], ['schools', 'Schools']].concat(years.map(v => ['y' + v, v + ' draft']))
+    .map(([k, t]) => {
+      const on = k === view || (k === 'y' + y && view === 'year');
+      const href = k[0] === 'y' && /^y\d{4}$/.test(k) ? `#/almanac/drafts?v=year&y=${k.slice(1)}` : `#/almanac/drafts${k === 'overview' ? '' : '?v=' + k}`;
+      return `<a href="${href}" class="${on ? 'on' : ''}">${t}</a>`;
+    }).join('');
+  const head = `<div class="eyebrow">The draft &middot; ${years.length} drafts, ${R.length} picks</div><div class="ph"><h1>Draft history</h1></div>
+    <p class="sub">Every Academy player taken in the pro draft since it began, where he went, where he is now and what he has done there.
+    Read from the save on ${asof}.</p><div class="x-tabs">${tabs}</div>`;
+  let body = '';
+
+  /* ---- pro clubs: who holds the most graduates now, and who drafted the most */
+  const clubAgg = () => {
+    const m = {};
+    const get = k => (m[k] = m[k] || { club: k, drafted: 0, byYear: {}, now: [], apps: 0, gls: 0, ast: 0 });
+    R.forEach(r => { const g = get(r.d.to); g.drafted++; g.byYear[r.d.year] = (g.byYear[r.d.year] || 0) + 1; });
+    R.forEach(r => { const g = get(r.now); g.now.push(r); g.apps += r.season ? r.season.apps || 0 : 0; g.gls += r.season ? r.season.gls || 0 : 0; g.ast += r.season ? r.season.ast || 0 : 0; });
+    return Object.values(m).sort((a, b) => b.now.length - a.now.length || b.drafted - a.drafted || a.club.localeCompare(b.club));
+  };
+  /* ---- schools: who produces the picks */
+  const schoolAgg = () => {
+    const m = {};
+    R.forEach(r => {
+      const k = r.d.frm, g = (m[k] = m[k] || { ab: k, n: 0, byYear: {}, r1: 0, top10: 0, no1: 0, best: null, gls: 0 });
+      g.n++; g.byYear[r.d.year] = (g.byYear[r.d.year] || 0) + 1; if (r.d.rnd === 1) g.r1++; if (r.d.pick <= 10) g.top10++; if (r.d.pick === 1) g.no1++;
+      g.gls += r.gls; if (!g.best || r.d.pick < g.best.d.pick) g.best = r;
+    });
+    return Object.values(m).sort((a, b) => b.n - a.n || b.r1 - a.r1 || b.top10 - a.top10);
+  };
+
+  if (view === 'overview') {
+    const active = R.filter(r => r.season && r.season.apps > 0).length, moved = R.filter(r => r.now !== r.d.to).length;
+    const tot = R.reduce((s, r) => s + r.gls, 0);
+    const lead = (f, n, pool) => (pool || R).filter(r => f(r) > 0).sort((a, b) => f(b) - f(a) || a.d.pick - b.d.pick).slice(0, n || 8);
+    const board = (t, f, show, pool) => `<div class="card"><div class="sh"><h2>${t}</h2><i></i></div><table class="t"><tbody>${lead(f, 8, pool).map((r, i) =>
+      `<tr><td class="rk">${i + 1}</td><td class="fc0">${A.mug(r.u, 'mugs')}</td><td class="nm">${A.plink(r.u)}<small class="dh-sub">${r.d.year} draft &middot; No. ${r.d.pick} &middot; ${esc(r.now)}</small></td><td><b>${show(r)}</b></td></tr>`).join('')}</tbody></table></div>`;
+    const ca = clubAgg().slice(0, 6), sa = schoolAgg().slice(0, 6);
+    const no1 = R.filter(r => r.d.pick === 1).sort((a, b) => a.d.year - b.d.year);
+    const steals = R.filter(r => r.d.pick - r.d.board >= 15).sort((a, b) => (b.d.pick - b.d.board) - (a.d.pick - a.d.board)).slice(0, 6);
+    body = `<div class="sec kpis">
+        <div class="kpi"><b>${R.length}</b><span>Players drafted</span></div>
+        <div class="kpi"><b>${active}</b><span>Played this season</span></div>
+        <div class="kpi"><b>${tot}</b><span>Pro goals, all graduates</span></div>
+        <div class="kpi"><b>${moved}</b><span>Now at another club</span></div>
+        <div class="kpi"><b>${new Set(R.map(r => r.now)).size}</b><span>Clubs holding one</span></div></div>
+      <div class="sec"><div class="sh"><h2>The No. 1 picks</h2><i></i></div><div class="dh-no1">${no1.map(r => {
+        const f = FACES[r.u];
+        return `<a class="dh-card" href="#/almanac/players/${r.u}">${f ? `<img src="${f.lg}" alt="" width="96" height="96">` : '<span class="pface ph0" style="width:96px">?</span>'}
+          <div><span class="eyebrow">${r.d.year} &middot; No. 1</span><b>${esc(r.p.name)}</b>
+          <span>${C[r.d.frm] ? A.crest(r.d.frm, 14) + ' ' + esc(C[r.d.frm].short) : esc(r.d.frm)} &rarr; ${esc(r.d.to)}${r.now !== r.d.to ? ', now ' + esc(r.now) : ''}</span>
+          <span>${r.apps} pro game${r.apps === 1 ? '' : 's'} &middot; ${r.gls} goal${r.gls === 1 ? '' : 's'} &middot; ${r.ast} assist${r.ast === 1 ? '' : 's'}${r.avr ? ' &middot; ' + r.avr.toFixed(2) : ''}</span></div></a>`;
+      }).join('')}</div></div>
+      <div class="sec two">
+        <div><div class="sh"><h2>Most graduates on the roster</h2><i></i><a class="more" href="#/almanac/drafts?v=clubs">All clubs</a></div>
+          <div class="tw"><table class="t"><thead><tr><th></th><th class="l">Pro club</th><th>Now</th><th>Drafted</th></tr></thead><tbody>
+          ${ca.map((g, i) => `<tr><td class="rk">${i + 1}</td><td class="nm">${esc(g.club)}</td><td><b>${g.now.length}</b></td><td class="dim">${g.drafted}</td></tr>`).join('')}</tbody></table></div></div>
+        <div><div class="sh"><h2>Most picks produced</h2><i></i><a class="more" href="#/almanac/drafts?v=schools">All schools</a></div>
+          <div class="tw"><table class="t"><thead><tr><th></th><th class="l">School</th><th>Picks</th><th>1st round</th></tr></thead><tbody>
+          ${sa.map((g, i) => `<tr><td class="rk">${i + 1}</td><td class="nm cl">${C[g.ab] ? `<a href="#/almanac/clubs/${g.ab}">${A.crest(g.ab, 15)} ${esc(C[g.ab].short)}</a>` : esc(g.ab)}</td><td><b>${g.n}</b></td><td class="dim">${g.r1}</td></tr>`).join('')}</tbody></table></div></div>
+      </div>
+      <div class="sec"><div class="sh"><h2>Career leaders in the pros</h2><i></i></div>
+        <div class="two">${board('Goals', r => r.gls, r => r.gls)}${board('Assists', r => r.ast, r => r.ast)}
+          ${board('Appearances', r => r.apps, r => r.apps)}${board('Average rating &middot; 10 games', r => r.apps >= 10 ? r.avr : 0, r => r.avr.toFixed(2))}</div></div>
+      ${steals.length ? `<div class="sec"><div class="sh"><h2>Fell furthest past the board</h2><i></i></div>
+        <div class="tw"><table class="t"><thead>${DH_HEAD(true)}</thead><tbody>${steals.map(r => dhRow(r, { year: true })).join('')}</tbody></table></div>
+        <p class="note">Players taken fifteen or more places after where the Brannigan Board had them on draft night. A green board number means he went later than we had him; red, earlier.</p></div>` : ''}
+      <p class="note">${DH_NOTE}${asof}. &ldquo;Now at&rdquo; is his club in the save today; ${moved} graduates have been traded, loaned or released since the night they were picked.</p>`;
+  }
+
+  if (view === 'clubs') {
+    const ca = clubAgg();
+    body = `<div class="sec"><div class="tw"><table class="t"><thead><tr><th></th><th class="l">Pro club</th><th>Graduates now</th>
+        ${years.map(v => `<th>Took in ${v}</th>`).join('')}<th>Apps</th><th>G</th><th>A</th><th class="l">Best graduate (ability)</th></tr></thead><tbody>
+      ${ca.map((g, i) => {
+        const best = g.now.slice().sort((a, b) => b.p.ca - a.p.ca)[0];
+        return `<tr><td class="rk">${i + 1}</td><td class="nm">${esc(g.club)}</td><td><b>${g.now.length}</b></td>
+          ${years.map(v => `<td class="dim">${g.byYear[v] || '&mdash;'}</td>`).join('')}
+          <td class="dim">${g.apps}</td><td>${g.gls}</td><td>${g.ast}</td>
+          <td class="nm">${best ? `${A.plink(best.u)} <span class="dim">${best.p.ca}</span>` : '&mdash;'}</td></tr>`;
+      }).join('')}</tbody></table></div>
+      <p class="note">&ldquo;Graduates now&rdquo; counts every Academy graduate on the club&rsquo;s books in the save today, however he got there. &ldquo;Took in&rdquo; is who they picked on draft night.
+      Apps, goals and assists are this season, by the graduates now at the club.</p></div>
+      <div class="sec"><div class="sh"><h2>Every graduate, by current club</h2><i></i></div><div class="dh-clubs">${ca.filter(g => g.now.length).map(g => `<div class="card"><div class="sh"><h2>${esc(g.club)}</h2><i></i><span class="more">${g.now.length}</span></div>
+        <ul class="dh-list">${g.now.slice().sort((a, b) => a.d.year - b.d.year || a.d.pick - b.d.pick).map(r => `<li>${A.mug(r.u, 'mugs')}<span>${A.plink(r.u)}<small>${r.d.year} No. ${r.d.pick} &middot; ${C[r.d.frm] ? esc(C[r.d.frm].short) : esc(r.d.frm)}${r.d.to !== g.club ? ' &middot; picked by ' + esc(r.d.to) : ''}</small></span><b>${r.season ? r.season.apps : 0}<small>apps</small></b></li>`).join('')}</ul></div>`).join('')}</div></div>`;
+  }
+
+  if (view === 'schools') {
+    const sa = schoolAgg();
+    body = `<div class="sec"><div class="tw"><table class="t"><thead><tr><th></th><th class="l">School</th><th>Picks</th>${years.map(v => `<th>${v}</th>`).join('')}
+        <th>1st round</th><th>Top 10</th><th>No. 1</th><th>Pro goals</th><th class="l">Highest pick</th></tr></thead><tbody>
+      ${sa.map((g, i) => `<tr><td class="rk">${i + 1}</td><td class="nm cl">${C[g.ab] ? `<a href="#/almanac/clubs/${g.ab}">${A.crest(g.ab, 15)} ${esc(C[g.ab].short)}</a>` : esc(g.ab)}</td>
+        <td><b>${g.n}</b></td>${years.map(v => `<td class="dim">${g.byYear[v] || '&mdash;'}</td>`).join('')}
+        <td>${g.r1 || '<span class="dim">0</span>'}</td><td>${g.top10 || '<span class="dim">0</span>'}</td><td>${g.no1 || '<span class="dim">0</span>'}</td>
+        <td class="dim">${g.gls}</td><td class="nm">${A.plink(g.best.u)} <span class="dim">${g.best.d.year} No. ${g.best.d.pick}</span></td></tr>`).join('')}</tbody></table></div>
+      <p class="note">Schools are the Academy club each player left from. Pro goals are career goals by that school&rsquo;s graduates.</p></div>`;
+  }
+
+  if (view === 'year') {
+    const rows = R.filter(r => r.d.year === y).sort((a, b) => a.d.pick - b.d.pick);
+    const rounds = [...new Set(rows.map(r => r.d.rnd))];
+    body = rows.length ? rounds.map(n => `<div class="sec"><div class="sh"><h2>${y} &middot; round ${n}</h2><i></i><span class="more">${rows.filter(r => r.d.rnd === n).length} picks</span></div>
+      <div class="tw"><table class="t"><thead>${DH_HEAD(false)}</thead><tbody>${rows.filter(r => r.d.rnd === n).map(r => dhRow(r)).join('')}</tbody></table></div></div>`).join('')
+      + `<p class="note">Grade is the mark Touchline gave the pick on the night; Board is where the Brannigan Board had him (green: went 10+ places later than we had him, red: 10+ earlier).
+        CA is his ability today. ${DH_NOTE}${asof}.</p>` : `<p class="sub">No draft in ${y}.</p>`;
+  }
+  return head + body;
 }
 
 function curTable() { return DB.seasons['2023-24'] || DB.seasons[Object.keys(DB.seasons).pop()]; }
@@ -1648,7 +1814,8 @@ function vLanding() {
           <a href="#/almanac/clubs"><b>Clubs</b><span>The sixteen</span></a>
           <a href="#/almanac/leaders"><b>Leaders</b><span>Goals, assists, grades</span></a>
           <a href="#/almanac/trophies"><b>Trophies</b><span>Rivalry ledgers</span></a>
-          <a href="#/almanac/draft"><b>Draft</b><span>Recruiting classes</span></a>
+          <a href="#/almanac/drafts"><b>Draft history</b><span>Every pick, every pro club</span></a>
+          <a href="#/almanac/draft"><b>Recruiting</b><span>Classes by school</span></a>
           <a href="#/almanac/timeline"><b>Timeline</b><span>Posts from the universe</span></a>
         </div>
         ${yearAgo.length ? `<div class="sh" style="margin-top:12px"><h2>A year ago this month</h2><i></i></div><div class="ecards">${yearAgo.map(ecard).join('')}</div>` : ''}
