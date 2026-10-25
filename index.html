@@ -598,7 +598,7 @@ footer .asof{font:700 11px var(--data);letter-spacing:.14em;text-transform:upper
   <div id="edhost" hidden><iframe id="edframe" title="Touchline edition"></iframe></div>
 </main>
 <footer><div class="wrap">
-  <div class="asof">Data read from the save on August 31, 2023 (in-game)</div>
+  <div class="asof">Data read from the save on September 30, 2023 (in-game)</div>
   <p><b>Touchline is fiction.</b> It is an in-universe sports desk and record office for a Football Manager 2022 save in which
     sixteen USL Academy college clubs play a single division. Crests are Touchline&rsquo;s own drawings, not any real institution&rsquo;s marks.</p>
   <p>Every table, result, appearance, goal, rating and ability figure is read from the save on the date shown on each page. Grades,
@@ -616,7 +616,7 @@ const P = DB.players, C = DB.clubs, SNAPS = DB.meta.snaps;
 const AB_OF = {};                       // full club name -> abbreviation
 Object.values(C).forEach(c => { AB_OF[c.name] = c.ab; });
 const SNAPKEY = SNAPS.map(s => s.key);
-const LAST = 's3b';
+const LAST = 's3c';
 
 const TIERS = [[0, 39, 'white'], [40, 79, 'bronze'], [80, 119, 'silver'],
 [120, 149, 'gold'], [150, 179, 'purple'], [180, 200, 'red']];
@@ -728,7 +728,7 @@ function devChart(u) {
 /* ================================================================ tables */
 function statRow(u, opts) {
   const p = P[u], o = opts || {}, s2 = p.s3, s1 = p.s2, ab = abOf(u);
-  const d = p.snaps.s3b && p.snaps.s3a ? p.snaps.s3b.ca - p.snaps.s3a.ca : null;
+  const d = p.snaps.s3c && p.snaps.s3b ? p.snaps.s3c.ca - p.snaps.s3b.ca : null;
   return `<tr>
     ${o.rank ? `<td class="rk">${o.rank}</td>` : ''}
     <td class="fc0">${mug(u)}</td>
@@ -769,7 +769,7 @@ const SORTV = {
   name: u => P[u].name.split(' ').slice(-1)[0], club: u => P[u].club,
   age: u => P[u].age, ca: u => P[u].ca, pa: u => P[u].pa,
   grade: u => (P[u].grade && P[u].grade.qualified ? P[u].grade.v : -1),
-  d: u => (P[u].snaps.s3b && P[u].snaps.s3a ? P[u].snaps.s3b.ca - P[u].snaps.s3a.ca : -99),
+  d: u => (P[u].snaps.s3c && P[u].snaps.s3b ? P[u].snaps.s3c.ca - P[u].snaps.s3b.ca : -99),
   apps: u => (P[u].s3 ? P[u].s3.apps : -1), gls: u => (P[u].s3 ? P[u].s3.gls : -1),
   ast: u => (P[u].s3 ? P[u].s3.ast : -1), avr: u => (P[u].s3 ? P[u].s3.avr : -1),
   s1apps: u => (P[u].s2 ? P[u].s2.apps : -1), s1gls: u => (P[u].s2 ? P[u].s2.gls : -1),
@@ -1152,29 +1152,29 @@ function search(term) {
 /* ================================================================ leaders */
 function vLeaders(q) {
   const cl = q.get('club') || '';
-  const act = Object.keys(P).filter(u => P[u].status === 'active' && P[u].s2 && (!cl || abOf(u) === cl));
+  const act = Object.keys(P).filter(u => P[u].status === 'active' && P[u].s3 && (!cl || abOf(u) === cl));
   const prevKey = SNAPKEY[SNAPKEY.length - 2], lastKey = SNAPKEY[SNAPKEY.length - 1];
   const rise = u => { const s = P[u].snaps; return (s[lastKey] && s[prevKey]) ? s[lastKey].ca - s[prevKey].ca : 0; };
   const boards = [
-    ['Goals', u => P[u].s2.gls, v => v, act],
-    ['Assists', u => P[u].s2.ast, v => v, act],
-    ['Goals + assists', u => P[u].s2.gls + P[u].s2.ast, v => v, act],
-    ['Average rating', u => P[u].s2.avr, v => v.toFixed(2), act.filter(u => (P[u].s2.mins || 0) >= 600)],
-    ['Touchline Grade', u => gradeOf(u) || 0, v => gbadge(v), act],
-    ['Player of the match', u => P[u].s2.pom, v => v, act],
+    ['Goals', u => P[u].s3.gls, v => v, act],
+    ['Assists', u => P[u].s3.ast, v => v, act],
+    ['Goals + assists', u => P[u].s3.gls + P[u].s3.ast, v => v, act],
+    ['Average rating', u => P[u].s3.avr, v => v.toFixed(2), act.filter(u => (P[u].s3.mins || 0) >= 600)],
+    ['Touchline Grade', u => (P[u].grade_s3 || {}).v || 0, v => gbadge(v), act],
+    ['Player of the match', u => P[u].s3.pom, v => v, act],
     ['Ability gained, ' + SNAPS[SNAPS.length - 2].short + ' → ' + SNAPS[SNAPS.length - 1].short, rise, v => delta(v), act],
     ['Highest potential', u => P[u].pa, v => v, act],
   ];
   const opts = Object.values(C).sort((a, b) => a.short.localeCompare(b.short))
     .map(c => `<option value="${c.ab}"${c.ab === cl ? ' selected' : ''}>${esc(c.short)}</option>`).join('');
   const cards = boards.map(([t, f, show, pool]) => {
-    const top = pool.slice().sort((a, b) => f(b) - f(a) || P[b].s2.avr - P[a].s2.avr).slice(0, 12);
+    const top = pool.slice().sort((a, b) => f(b) - f(a) || P[b].s3.avr - P[a].s3.avr).slice(0, 12);
     return `<div class="card"><div class="sh"><h2>${t}</h2><i></i></div><table class="t"><tbody>${top.map((u, i) =>
       `<tr><td class="rk">${i + 1}</td><td class="fc0">${mug(u, 'mugs')}</td><td class="nm">${plink(u)}</td>
        <td class="cl">${crest(abOf(u), 15)}</td><td><b>${show(f(u))}</b></td></tr>`).join('')}</tbody></table></div>`;
   }).join('');
-  return `<div class="eyebrow">Season 2 &middot; 2022&ndash;23</div><div class="ph"><h1>Leaders</h1></div>
-    <p class="sub">Season leaderboards across all competitions, read from the save on ${esc(DB.meta.asof)}.
+  return `<div class="eyebrow">Season 3 &middot; 2023&ndash;24 so far</div><div class="ph"><h1>Leaders</h1></div>
+    <p class="sub">Season leaderboards across all competitive games (league, conference groups and Youth League), read from the save on ${esc(DB.meta.asof)}.
     Average rating needs 600 minutes. Touchline Grades are this desk&rsquo;s own model.</p>
     <div class="filters" style="margin-top:14px"><label for="lcl">Club</label><select id="lcl"><option value="">All sixteen</option>${opts}</select></div>
     <div class="two">${cards}</div>`;
